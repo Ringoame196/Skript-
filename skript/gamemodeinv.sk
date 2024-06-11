@@ -1,0 +1,20 @@
+On gamemode change:
+    player's gamemode is not spectator
+    play sound "block.chest.locked" with volume 1 to player
+    set {_i} to 0
+    if player's gamemode is creative:
+        loop 9 times:
+            set {Survival.%player%::%{_i}%} to slot {_i} of player's inventory
+            set slot {_i} of player's inventory to {Creative.%player%::%{_i}%}
+            add 1 to {_i}
+        set {Survival.%player%::9} to player's off hand tool
+        set player's off hand tool to {Creative.%player%::9}
+        send "§6クリエイティブインベントリに切り替えました"
+    else:
+        loop 9 times:
+            set {Creative.%player%::%{_i}%} to slot {_i} of player's inventory
+            set slot {_i} of player's inventory to {Survival.%player%::%{_i}%}
+            add 1 to {_i}
+        set {Creative.%player%::9} to player's off hand tool
+        set player's off hand tool to {Survival.%player%::9}
+        send "§2サバイバルインベントリに切り替えました"

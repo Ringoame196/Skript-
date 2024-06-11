@@ -1,0 +1,25 @@
+at 7pm in "world":
+    loop all players:
+        spawn a zombie at the loop-player:
+            set name of the zombie to "眠気"
+            set held item of zombie to diamond sword
+        send "§c眠気が襲ってきた" to all players
+
+on death:
+    if attacker is zombie:
+        cancel event
+        if name of attacker is "眠気":
+            set block at location at victim to red bed
+            set {nemuke.%victim%} to "true"
+            send "§a%victim% は 眠気に負けた (素直に寝とけやこの野郎)" to victim
+            kill attacker
+
+every seconds:
+    loop all players:
+        {nemuke.%loop-player%} is set
+        apply slowness 255 to loop-player for 1 seconds
+        apply blindness 255 to loop-player for 1 seconds
+
+On right click:
+    event-block is red bed
+    delete {nemuke.%player%}

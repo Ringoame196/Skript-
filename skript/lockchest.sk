@@ -1,0 +1,48 @@
+On Craft:
+    event-item is minecart with chest
+    cancel event
+    close player's inventory
+    remove event-item from player's inventory
+    remove minecart from player's inventory
+    remove chest from player's inventory
+    play sound "entity.generic.explode" with volume 1 to player
+    set {_name} to "%player%のチェスト"
+    spawn a armor stand at the player:
+        set name of the armor stand to "%{_name}%"
+        set helmet of the armor stand to chest
+    set {location.block.%player%} to location of block under the player
+    set {location.%player%} to location of player
+    
+On player move:
+    set {_name} to "%player%のチェスト"
+    loop all entities:
+        name of loop-entity is {_name}
+        loop blocks in radius 1.5 around player:
+            if {location.block.%player%} is location of loop-block:
+                stop
+        teleport loop-entity to {location.%player%}
+        block under the player is not air
+        set {location.block.%player%} to location of block under the player
+        set {location.%player%} to location of player
+        stop
+
+On Sneak Toggle:
+    player is sneaking
+    loop all entities in radius 3 around player:
+        name of loop-entity is "%player%のチェスト"
+        play sound "block.chest.open" with volume 1 to player
+        open chest inventory with 3 row named "チェスト" to player
+        set {runchest.%player%} to "true"
+        set {_i} to 0
+        loop 27 times:
+            set slot {_i} of player's current inventory to {itemlist.%player%::%{_i} + 1%}
+            add 1 to {_i}
+On inventory close:
+    {runchest.%player%} is set
+    set {_i} to 0
+    delete {itemlist.%player%::*}
+    loop 27 times:
+        add slot {_i} of player's current inventory to {itemlist.%player%::*}
+        add 1 to {_i}
+    delete {runchest.%player%}
+    play sound "block.chest.close" with volume 1 to player

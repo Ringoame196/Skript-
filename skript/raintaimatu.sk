@@ -1,0 +1,29 @@
+On Place:
+    event-block is torch
+    add location of event-block to {torchlist::*}
+
+On break:
+    event-block is torch
+    remove location of event-block from {torchlist::*}
+
+On Weather Change:
+    Weather is raining
+    set {_i} to 1
+    set {_size} to size of {torchlist::*}
+    loop {_size} times:
+        set {_loc} to {torchlist::%{_i}%}
+        set block at location at {_loc} to dead bush
+        add 1 to {_i}
+    delete {torchlist::*}
+    {_size} > 0
+    send "§4%{_size}%個の火が消えました" to all players
+    play sound "block.fire.extinguish" with volume 1 to all players
+
+On right click:
+    event-block is dead bush
+    event-item is flint and steel
+    cancel event
+    set event-block to torch
+    add location of event-block to {torchlist::*}
+    send "§3火をつけ直した"
+    play sound "item.firecharge.use" with volume 1 to player

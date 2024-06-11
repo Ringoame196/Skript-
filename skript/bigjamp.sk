@@ -1,0 +1,16 @@
+On right click:
+    event-item is rabbit foot named "大ジャンプ"
+    push the player upwards at speed 5
+    set {j.%player%} to "jamp"
+    play sound "item.trident.throw" with volume 1 to player
+
+On damage:
+    victim is player
+    {j.%victim%} is set
+    cancel event
+    damage cause is fall
+    damage all entities in radius 5 around victim by 100
+    delete {j.%victim%}
+    show huge explosion at the victim to the victim
+    play sound "entity.generic.explode" with volume 1 to victim
+    apply slowness 255 to the victim for 3 second

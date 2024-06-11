@@ -1,0 +1,226 @@
+On right click:
+    #お題確認
+    if event-item is nether star:
+        execute player command "/cp"
+    #チェストからお題を設定する
+    else if event-item is slime ball named "お題設定":
+        event-block is chest
+        cancel event
+        if {start} is set:
+            send "§c既にゲームがスタートされています"
+            stop
+        delete {itemlist::*}
+        set {_i} to 0
+        loop 26 times:
+            if slot {_i} of event-block's inventory is not air:
+                add slot {_i} of event-block's inventory to {itemlist::*}
+            add 1 to {_i}
+        send "§6お題設定完了しました"
+
+    else if event-item is clay ball named "妨害":
+        {start} is set
+        add 0 to {score.%player%}
+        if {score.%player%} >= -15:
+            send "§a妨害！"
+            remove 3 from {score.%player%}
+            loop 3 times:
+                loop all players:
+                    if loop-player is not player:
+                        execute loop-player command "/cp"
+                wait 20 ticks
+        else:
+            send "§cポイントが足りないよ"
+ 
+command /cp [<text>] [<text>] [<int>]:
+    trigger:
+        #お題確認
+        if arg-1 is not set:
+            if {setitem} is set:
+                open chest inventory with 1 row named "&3お題" to player
+                set slot 4 of player's current inventory to 1 of {setitem}
+                stop
+            else:
+                send "§cお題のアイテムが決まっていません"
+                stop
+        #give
+        if arg-1 is "give":
+            open chest inventory with 1 row named "§aGIVE" to player
+            set slot 0 of player's current inventory to slime ball named "お題設定"
+            set slot 1 of player's current inventory to clay ball named "妨害"
+        #お題設定
+        else if arg-1 is "open":
+            {start} is not set
+            send "§6お題にするアイテムを入れてください"
+            open chest inventory with 3 row named "&3お題アイテム" to player
+            set slot 0 of player's current inventory to command block named "§3決定"
+            set {_i} to 1
+            loop 26 times:
+                set slot {_i} of player's current inventory to {itemlist::%{_i}%}
+                add 1 to {_i}
+        #スタート
+        else if arg-1 is "start":
+            if {start} is set:
+                send "§c既にゲームスタートされています"
+            else:
+                if {itemlist::*} is not set:
+                    send "§cアイテムを指定してください <run command:/cp open>§6[設定する]"
+                    stop
+                set {start} to "start"
+                send "§2-------------------------------------" to all players
+                send "§aクラフトpvpスタート(by %player%)" to all players
+                play sound "entity.firework_rocket.twinkle_far" with volume 1 to player
+                delete {timer}
+                if {max} is set:
+                    send "§eクリア条件:%{max}%ポイント達成" to all players
+                if {op} is set:
+                    send "§eオプション:%{op}%" to all players
+                wait 20 ticks
+                execute console command "/cp system1"
+        #ストップ
+        else if arg-1 is "stop":
+            if {start} is not set:
+                send "§c既に止まっています"
+            else:
+                if sender is player:
+                    send "§5-----------------------------------------" to all players
+                    send "§cゲーム終了(by %player%)" to all players
+                    play sound "block.anvil.use" with volume 1 to player
+                send "§3-----------------------------------------" to all players
+                send "§3得点" to all players
+                send "§2-----------------------------------------"
+                loop all players:
+                    add 0 to {score.%loop-player%}
+                    send "§6[%loop-player%]%{score.%loop-player%}%点" to all players
+                    delete {score.%loop-player%}
+                send "§5-----------------------------------------" to all players
+                delete {start}
+                delete {setitem}
+                delete {itemlist::*}
+        #お題スキップ
+        else if arg-1 is "skip":
+            send "§3スキップ！ (by %player%)" to all players
+            delete {setitem}
+            delete {timer}
+            wait 100 ticks
+            execute console command "/cp system1"
+        else if arg-1 is "reload":
+            execute player command "/sk reload craftpvp"
+        #裏システム1
+        else if arg-1 is "system1":
+            sender is not player
+
+            set {_tmp::*} to {itemlist::*}
+            delete {itemlist::*}
+            set {_size} to size of {_tmp::*}
+            set {_i} to 1
+            loop {_size} times:
+                add {_tmp::%{_i}%} to {itemlist::*}
+                add 1 to {_i}
+
+            set {_s} to size of {itemlist::*}
+            set {_r} to random integer from 1 to {_s}
+            set {setitem} to {itemlist::%{_r}%}
+
+            set {_i} to 3
+            loop 3 times:
+                {start} is set
+                play sound "block.dispenser.dispense" with volume 1 to all players
+                send "§6お題発表まで%{_i}%秒" to all players
+                wait 20 ticks
+                remove 1 from {_i}
+
+            play sound "block.bell.use" with volume 1 to player
+            execute all players command "/cp"
+        #裏システム2
+        else if arg-1 is "system2":
+            if 1 of {craftitem.%player%} is 1 of {setitem}:
+                send "§e%player%さんがお題をクリアしました(+10点)" to all players
+                send "§3経過時間:%{timer}%秒" to all players
+                delete {timer}
+                play sound "item.totem.use" with volume 0.5 to player
+                add 10 to {score.%player%}
+                if {max} is set:
+                    if {max} <= {score.%player%}:
+                        send "§3------------------------" to all players
+                        send "§e勝利:%player%" to all players
+                        execute console command "/cp stop"
+                        stop
+                if {score.%player%} >= {max} - 10:
+                    send "§a%player%さんがリーチになりました"
+                remove {setitem} from {itemlist::*}
+                if {itemlist::*} is not set:
+                    send "§a--------------------" to all players
+                    send "§cお題終了" to all players
+                    execute console command "/cp stop"
+                    stop
+                send "§6次のお題は10秒後に発表されます" to all players
+                delete {setitem}
+                wait 200 ticks
+                execute console command "/cp system1"
+            else:
+            #オプション用
+                {op} is set 
+                if {op} is "お題以外クラフトでポイント減少":
+                    remove 1 from {score.%player%}
+                    send "§c-1ポイント"
+        #設定
+        else if arg-1 is "set":
+            {start} is not set:
+            #クリア条件
+            if arg-2 is "max":
+                set {max} to arg-3
+                if {max} is -1:
+                    delete {max}
+                    send "§6クリア条件を削除しました"
+                else:
+                    send "§6クリア条件を%{max}%ポイントにしました"
+            #オプション
+            else if arg-2 is "op1":
+                if arg-3 is 1:
+                    send "§6お題以外クラフトでポイントを減るが有効になりました"
+                    set {op} to "お題以外クラフトでポイント減少"
+                else:
+                    send "§6オプションを無効にしました"
+                    delete {op}
+#お題のGUI
+On inventory click:
+    name of clicked inventory is "&3お題アイテム"
+    clicked slot is command block named "§3決定"
+    cancel event
+    set {_i} to 1
+    delete {itemlist::*}
+    loop 26 times:
+        if slot {_i} of player's current inventory is not air:
+            add slot {_i} of player's current inventory to {itemlist::*}
+        add 1 to {_i}
+    close player's inventory
+    send "§aお題設定完了"
+    send "<run command:/cp start>§c[スタートボタン]"
+#お題表示
+On inventory click:
+    name of clicked inventory is "§3お題"
+    cancel event
+    close player's inventory
+#クラフト
+On Craft:
+    {start} is set
+    set {craftitem.%player%} to item
+    execute player command "/cp system2"
+#かまどクラフト
+On inventory click:
+    {start} is set
+    set {_s} to 0
+    if name of event-inventory is "Furnace":
+        set {_s} to 1
+    else if name of event-inventory is "Smoker":
+        set {_s} to 1
+    else if name of event-inventory is "Blast Furnace":
+        set {_s} to 1
+    {_s} is 1
+    event-slot is 2
+    set {craftitem.%player%} to event-item
+    execute player command "/cp system2"
+
+every seconds:
+    {start} is set
+    add 1 to {timer}

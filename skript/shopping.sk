@@ -1,0 +1,86 @@
+On right click:
+    event-item is painting named "タブレット"
+    open chest inventory with 4 row named "&2ショッピングサイト" to player
+    set {_i} to 18
+    loop 9 times:
+        set slot {_i} of player's current inventory to red stained glass pane named " "
+        add 1 to {_i}
+    set slot 26 of player's current inventory to redstone block named "§c削除"
+    set slot 35 of player's current inventory to emerald named "§a購入"
+
+    set slot 0 of player's current inventory to apple
+    set slot 1 of player's current inventory to diamond
+    set slot 2 of player's current inventory to iron ingot
+    set slot 3 of player's current inventory to ender pearl
+    set slot 4 of player's current inventory to totem of undying
+    set slot 5 of player's current inventory to bow
+    set slot 6 of player's current inventory to arrow
+    set slot 7 of player's current inventory to shield
+    set slot 8 of player's current inventory to tnt
+    set slot 9 of player's current inventory to elytra
+    set slot 10 of player's current inventory to dirt
+    set slot 11 of player's current inventory to anvil
+    set slot 12 of player's current inventory to fishing rod
+    set slot 13 of player's current inventory to bucket
+    set slot 14 of player's current inventory to snowball
+    set slot 15 of player's current inventory to trident
+    set slot 16 of player's current inventory to potion
+    set slot 17 of player's current inventory to crossbow
+
+    set {_i} to 1
+    loop 8 times:
+        set slot {_i} + 26 of player's current inventory to {mycart.%player%::%{_i}%}
+        add 1 to {_i}
+
+On inventory click:
+    name of clicked inventory is "&2ショッピングサイト"
+    cancel event
+    if clicked slot < 18:
+        if size of {mycart.%player%::*} >= 8:
+            send "§cカートがいっぱいです"
+            play sound "entity.arrow.hit_player" with volume 1 to player
+            stop
+        add event-item to {mycart.%player%::*}
+    
+    play sound "ui.button.click" with volume 1 to player
+    if event-item is redstone block named "§c削除":
+        delete {mycart.%player%::*}
+        send "§cカート削除しました"
+
+    else if event-item is emerald named "§a購入":
+        send "§a購入完了"
+        send "§3発送準備中"
+        close player's inventory
+        wait 20 ticks
+        send "§2発送準備完了…"
+        wait 80 ticks
+        send "§6発送開始"
+        play sound "BLOCK_NOTE_BLOCK_BELL" with volume 1 to player
+        set {_name} to "%player%の商品"
+        spawn a pig 5 meters above the player:
+            set name of pig to "%{_name}%"
+            apply slow falling 5 to the pig for 9999 second
+            apply slowness 255 to the pig for 9999 second
+        set {pl.%player%::*} to {mycart.%player%::*}
+        delete {mycart.%player%::*}
+        stop
+
+    set {_i} to 1
+    loop 8 times:
+        set slot {_i} + 26 of player's current inventory to {mycart.%player%::%{_i}%}
+        add 1 to {_i}
+
+On damage:
+    name of victim is "%attacker%の商品"
+    kill victim
+    show large explosion at the victim to the attacker
+    play sound "block.anvil.use" with volume 1 to attacker
+    set block at location of victim to chest
+    
+    set {_i} to 1
+    loop 8 times:
+        set slot {_i} of block at location of victim to {pl.%attacker%::%{_i}%}
+        add 1 to {_i}
+
+    set block at location of victim to air
+    delete {pl.%attacker%::*}

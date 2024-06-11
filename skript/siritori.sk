@@ -1,0 +1,33 @@
+command /siritori <text>:
+    trigger:
+        if arg-1's length <= 1:
+            send "§c2文字以上の言葉のみ発現可能です"
+            stop
+        if {siritori::*} is not set:
+            send "§a[しりとり] %player%さんがしりとりを開始しました" to all players
+            set {siritori.last} to first character of arg-1
+        set {_f} to first character of arg-1
+        if {_f} is not {siritori.last}:
+            send "§cつながるように入力してください"
+            play sound "item.shield.block" with volume 1 to player
+            stop
+        send "§a[しりとり] <%player%> %arg-1%" to all players
+        play sound "BLOCK_NOTE_BLOCK_BELL" with volume 1 to player
+        add "<%player%> %arg-1%" to {siritori::*}
+        set {siritori.last} to last character of arg-1
+        {siritori.last} is "ん"
+        send "§c[しりとり] 終了" to all players
+        play sound "block.anvil.use" with volume 1 to player
+        send "" to all players
+        send "[しりとり結果]" to all players
+        set {_s} to size of {siritori::*}
+        send "§e回数:%{_s}%" to all players
+        send "--------------------------------" to all players
+        set {_i} to 1
+        loop {_s} times:
+            send "§6%{siritori::%{_i}%}%" to all players
+            add 1 to {_i}
+            wait 5 ticks
+        send "-------------------------------" to all players
+        delete {siritori::*}
+        delete {siritori.last}

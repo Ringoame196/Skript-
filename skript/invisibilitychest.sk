@@ -1,0 +1,53 @@
+On right click:
+    if event-block is barrier block:
+        {invchest.%event-block%::*} is set
+        if event-item is stick named "表示化棒":
+            send "§aチェストを表示しました"
+            cancel event
+            set {_i} to 1
+            set block at event-block to chest
+            loop 27 times:
+                set slot {_i} - 1 of event-block to {invchest.%event-block%::%{_i}%}
+                add 1 to {_i}
+            delete {invchest.%event-block%::*}
+        else:
+            open chest inventory with 3 row named "透明チェスト" to player
+            play sound "block.chest.open" with volume 1 to player
+            set {_i} to 1
+            set {invchest.%player%} to event-block
+            loop 27 times:
+                set slot {_i} - 1 of player's current inventory to {invchest.%event-block%::%{_i}%}
+                add 1 to {_i}
+    else:
+        event-block is chest
+        event-item is stick named "透明化棒"
+        send "§cチェストを透明にしました"
+        cancel event
+        set {_i} to 0
+        loop 27 times:
+            add slot {_i} of event-block's inventory to {invchest.%event-block%::*}
+            set slot {_i} of event-block's inventory to air
+            add 1 to {_i}
+        set block at event-block to barrier
+
+On inventory close:
+    {invchest.%player%} is set
+    set {_i} to 1
+    loop 27 times:
+        set {invchest.%{invchest.%player%}%::%{_i}%} to slot {_i} - 1 of player's current inventory
+        add 1 to {_i}
+    delete {invchest.%player%}
+    play sound "block.chest.close" with volume 1 to player
+
+On block break:
+    event-block is barrier block
+    {invchest.%event-block%::*} is set
+    cancel event
+    send "§c透明チェストを壊しました"
+    set {_i} to 1
+    set block at event-block to chest
+    loop 27 times:
+        set slot {_i} - 1 of event-block to {invchest.%event-block%::%{_i}%}
+        add 1 to {_i}
+    set block at event-block to air
+    delete {invchest.%event-block%::*}

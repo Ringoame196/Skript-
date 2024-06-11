@@ -1,0 +1,21 @@
+On right click:
+    event-block is smooth stone slab
+    cancel event
+    set {_name} to "%player%の椅子"
+    spawn a armor stand -1.5 meters above the event-block:
+        set name of the armor stand to "%{_name}%"
+    loop entities in radius 5 around event-block:
+        name of loop-entity is "%{_name}%"
+        make player ride loop-entity
+        set {sit.%player%} to "sit"
+        send "§6座る"
+        stop
+
+On Sneak Toggle:
+    {sit.%player%} is set
+    delete {sit.%player%}
+    send "§a立つ"
+    set {_name} to "%player%の椅子"
+    loop entities in radius 3 around player:
+        name of loop-entity is "%{_name}%"
+        kill loop-entity

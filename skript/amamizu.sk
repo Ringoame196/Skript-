@@ -1,0 +1,39 @@
+every 10 ticks:
+    loop all players:
+        if weather of loop-player's world is not rain:
+            set {potion.%loop-player%} to 0
+            stop
+        loop-player's pitch is -90
+        loop-player's tool is glass bottle
+        add 1 to {potion.%loop-player%}
+        play sound "entity.player.burp" with volume 1 to loop-player
+        if {potion.%loop-player%} is 8:
+            set loop-player's tool to bottles of water named "雨水"
+            set {potion.%loop-player%} to 0
+            play sound "block.brewing_stand.brew" with volume 1 to loop-player
+
+command /get:
+    trigger:
+        send "%player's pitch%"
+
+On inventory click:
+    name of clicked inventory is "Brewing Stand"
+    event-item is bottles of water named "雨水"
+    cancel event
+    remove bottles of water named "雨水" from player's inventory
+    add bottles of water named "雨水" to player's inventory
+    send "§c雨水をそのまま使うことはできません"
+    play sound "block.note_block.bell" with volume 1 to player
+    close player's inventory
+
+On right click:
+    player's tool is bottles of water named "雨水"
+    event-block is campfire
+    set player's tool to bottles of water
+    play sound "block.fire.extinguish" with volume 1 to player
+    send "§a浄水しました"
+
+On drink:
+    event-item is bottles of water named "雨水"
+    send "§cお腹を下した…"
+    apply slowness 255 to the player for 5 second

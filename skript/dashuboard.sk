@@ -1,0 +1,37 @@
+On player move:
+    block under the player is magenta glazed terracotta
+    set {_facing} to event-block's facing
+    set {_x} to event-block's x-coordinate
+    set {_y} to event-block's y-coordinate
+    set {_z} to event-block's z-coordinate
+
+    set {_i} to 0
+    loop 30 times:
+        play sound "block.dispenser.dispense" with volume 0.5 to all players
+        if {_facing} is west:
+            add 1 to {_x}
+        else if {_facing} is north:
+            add 1 to {_z}
+        else if {_facing} is east:
+            remove 1 from {_x}
+        else if {_facing} is south:
+            remove 1 from {_z}
+        else if {_facing} is up:
+            remove 1 from {_y}
+        else if {_facing} is down:
+            add 1 to {_y}
+
+        if {_i} is 13:
+        else if {_i} is 14:
+        else if {_i} is 15:
+        else if {_i} is 16:
+        else if {_i} is 17:   
+        else if {_i} <= 15:
+            add 1 to {_y}
+        else:
+            remove 1 from {_y}
+        add 1 to {_i}
+        execute console command "/execute as %player% at @s run tp @s %{_x}% %{_y}% %{_z}%"
+        wait 3 ticks
+    
+    play sound "block.anvil.place" with volume 1 to all players

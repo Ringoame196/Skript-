@@ -1,0 +1,87 @@
+On Dispense:
+    event-item is piston
+    cancel event
+
+    set {_facing} to event-block's facing
+    set {_x} to event-block's x-coordinate
+    set {_y} to event-block's y-coordinate
+    set {_z} to event-block's z-coordinate
+    #12はピストンが押せるブロックの最大の数
+    loop 30 times:
+        play sound "block.piston.extend" with volume 0.5 to all players
+        if {_facing} is west:
+            remove 1 from {_x}
+        else if {_facing} is north:
+            remove 1 from {_z}
+        else if {_facing} is east:
+            add 1 to {_x}
+        else if {_facing} is south:
+            add 1 to {_z}
+        else if {_facing} is up:
+            add 1 to {_y}
+        else if {_facing} is down:
+            remove 1 from {_y}
+        set {_block} to block at location at {_x}, {_y}, {_z}
+        if {_block} is not air:
+            add {_block} to {_blocklist::*}
+        else:
+            set block at location at {_x}, {_y}, {_z} to command block
+            set block at location at {_x}, {_y}, {_z}'s facing to {_facing}
+        wait 3 ticks
+    set {_s} to size of {_blocklist::*}
+    set {_i} to 1
+
+    set {_lx} to {_x}
+    set {_ly} to {_y}
+    set {_lz} to {_z}
+
+    if {_facing} is west:
+        remove 1 from {_lx}
+    else if {_facing} is north:
+        remove 1 from {_lz}
+    else if {_facing} is east:
+        add 1 to {_lx}
+    else if {_facing} is south:
+        add 1 to {_lz}
+    else if {_facing} is up:
+        add 1 to {_ly}
+    else if {_facing} is down:
+        remove 1 from {_ly}
+    
+    loop {_s} times:
+        play sound "block.piston.extend" with volume 0.5 to all players
+        if {_facing} is west:
+            remove 1 from {_x}
+        else if {_facing} is north:
+            remove 1 from {_z}
+        else if {_facing} is east:
+            add 1 to {_x}
+        else if {_facing} is south:
+            add 1 to {_z}
+        else if {_facing} is up:
+            add 1 to {_y}
+        else if {_facing} is down:
+            remove 1 from {_y}
+        set block at location at {_x}, {_y}, {_z} to {_blocklist::%{_i}%}
+        set block at {_blocklist::%{_i}%} to command block
+        set block at {_blocklist::%{_i}%}'s facing to {_facing}
+        add 1 to {_i}
+        wait 3 ticks
+
+    wait 60 ticks
+    loop 30 times:
+        play sound "block.piston.contract" with volume 0.5 to all players
+        if {_facing} is west:
+            add 1 to {_lx}
+        else if {_facing} is north:
+            add 1 to {_lz}
+        else if {_facing} is east:
+            remove 1 from {_lx}
+        else if {_facing} is south:
+            remove 1 from {_lz}
+        else if {_facing} is up:
+            remove 1 from {_ly}
+        else if {_facing} is down:
+            add 1 to {_ly}
+        set block at location at {_lx}, {_ly}, {_lz} to air
+        wait 3 ticks

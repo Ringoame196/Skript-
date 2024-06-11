@@ -1,0 +1,23 @@
+On Place:
+    event-block is ladder
+    if player's tool is ladder named "縄梯子":
+        set {_c} to 16
+    else if player's tool is ladder named "超縄梯子":
+        set {_c} to 100
+    set {_y} to event-block's y-coordinate - 1
+    set {_facing} to event-block's facing
+    loop {_c} times:
+        if block at location at event-block's x-coordinate , {_y} , event-block's z-coordinate is air:
+            set block at location at event-block's x-coordinate , {_y} , event-block's z-coordinate to ladder
+            set block at location at event-block's x-coordinate , {_y} , event-block's z-coordinate's facing to {_facing}
+            remove 1 from {_y}
+            play sound "BLOCK_NOTE_BLOCK_BELL" with volume 1 to player
+            wait 3 ticks
+        else:
+            play sound "block.anvil.use" with volume 0.5 to player
+    if block at location at event-block's x-coordinate , {_y} , event-block's z-coordinate is air:
+        play sound "block.bell.use" with volume 1 to player
+        send "§c縄梯子の長さが足りなかった"
+        loop 18 times:
+            set block at location at event-block's x-coordinate , {_y} , event-block's z-coordinate to air
+            add 1 to {_y}

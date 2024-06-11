@@ -1,0 +1,31 @@
+On right click:
+    event-block is oak fence gate
+    if {lock.%location of event-block%} is set:
+        if event-item is not tripwire hook:
+            cancel event
+            send "§cロックがかかっています"
+        else:
+            if player's tool is not tripwire hook named "§6%{lock.%location of event-block%}%":
+                cancel event
+                send "§cロックがかかっています"
+    else:
+        event-item is tripwire hook named "鍵"
+        cancel event
+        set {_list::*} to "1","2","3","4","5","6","7","8","9","0","a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z","A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z"
+        set {_uuid} to ""
+        loop 12 times:
+            set {_r} to random integer from 1 to size of {_list::*}
+            set {_uuid} to "%{_uuid}%%{_list::%{_r}%}%"
+        set player's tool to tripwire hook named "§6%{_uuid}%"
+        set {lock.%location of event-block%} to {_uuid}
+        send "§2ロックをかけました"
+
+On break:
+    {lock.%location of event-block%} is set
+    cancel event
+    if player's tool is tripwire hook named "§6%{lock.%location of event-block%}%":
+        delete {lock.%location of event-block%}
+        set player's tool to tripwire hook named "鍵"
+        send "§3ロックを解除しました"
+    else:
+        send "§cロックがかかっています"

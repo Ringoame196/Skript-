@@ -1,0 +1,64 @@
+On damage:
+    attacker is player
+    victim is husk
+    helmet of victim is not birch log
+    attacker's tool is name tag named "モグラたたき"
+    cancel event
+    set name of victim to "§a殴ってゲームスタート"
+    execute console command "/data merge entity %victim's UUID% {NoAI:true,CustomNameVisible:true}"
+    set helmet of victim to birch log
+
+On damage:
+    attacker is player
+    victim is husk
+    if helmet of victim is birch log:
+        set {_name} to name of victim
+        cancel event
+        set {_i} to 5
+        set {pointo.%victim's UUID%} to 0
+        send "§a[もぐらたたきゲーム]" to attacker
+        send "§aハスクの頭がエメラルドブロックのときに殴る" to attacker
+        send "§cレッドストーンブロックの時は叩くな" to attacker
+        send "§6あなたは一体何点取れる？" to attacker
+        loop 5 times:
+            set name of victim to "スタートまで%{_i}%"
+            play sound "block.dispenser.dispense" with volume 1 to attacker
+            wait 20 ticks
+            remove 1 from {_i}
+        set name of victim to "§aスタート"
+        wait 20 ticks
+    
+        set {_time} to 8
+        loop {_time} times:
+            set helmet of victim to emerald block
+            wait 10 ticks
+            set helmet of victim to redstone block
+            set {_r} to random integer from 1 to 5
+            loop {_r} times:
+                wait 20 ticks
+        set name of victim to "§c終了"
+        set helmet of victim to bedrock
+        wait 20 ticks
+        set name of victim to "§a結果%{point.%victim's UUID%}%ポイント"
+        wait 30 ticks
+        set {_i} to 5
+        loop {_i} times:
+            set name of victim to "§c爆破まで%{_i}%秒"
+            play sound "block.dispenser.dispense" with volume 1 to attacker
+            wait 20 ticks
+            remove 1 from {_i}
+        create an explosion of force 5 at the victim
+
+    else if helmet of victim is emerald block:
+        cancel event
+        play sound "BLOCK_NOTE_BLOCK_BELL" with volume 1 to attacker
+        set helmet of victim to redstone block
+        add 10 to {point.%victim's UUID%}
+        set name of victim to "§a%{point.%victim's UUID%}%ポイント"
+    else if helmet of victim is redstone block:
+        cancel event
+        play sound "block.anvil.place" with volume 1 to attacker
+        remove 5 from {point.%victim's UUID%}
+        set name of victim to "§a%{point.%victim's UUID%}%ポイント"
+    else if helmet of victim is bedrock:
+        cancel event

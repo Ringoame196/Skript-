@@ -1,0 +1,41 @@
+On Break:
+    player's tool is gold axe named "コピー"
+    cancel event
+    set {_uuidlist::*} to "0","1","2","3","4","5","6","7","8","9","a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z","A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z"
+    set {_s} to size of {_uuidlist::*}
+    set {_uuid} to "コピーコード:"
+    loop 5 times:
+        set {_r} to random integer from 1 to {_s}
+        set {_uuid} to "%{_uuid}%%{_uuidlist::%{_r}%}%"
+    send "§3コピーコードを発行しました"
+    play sound "BLOCK_NOTE_BLOCK_BELL" with volume 5 to player
+    add glass named "%{_uuid}%" to player's inventory
+    set {copyid.%{_uuid}%} to event-block
+
+On Place:
+    event-block is glass
+    set {_name} to name of player's tool
+    {copyid.%{_name}%} is set
+    send "§a丸コピ完了"
+    set block at event-block to {copyid.%{_name}%}
+    play sound "BLOCK_NOTE_BLOCK_BELL" with volume 5 to player
+
+On right click:
+    player's tool is gold axe named "コピー"
+    event-block is chest
+    cancel event
+    set {_x} to event-block's x-coordinate
+    set {_y} to event-block's y-coordinate + 1
+    set {_z} to event-block's z-coordinate
+    
+    set {_i} to 0
+    loop 27 times:
+        set {_item} to slot {_i} of event-block's inventory
+        {_item} is glass
+        set {_name} to name of {_item}
+        {copyid.%{_name}%} is set
+        set block at location at {_x}, {_y}, {_z} to {copyid.%{_name}%}
+        add 1 to {_y}
+        add 1 to {_i}
+        wait 5 ticks
+        play sound "BLOCK_NOTE_BLOCK_BELL" with volume 5 to player

@@ -1,0 +1,25 @@
+on rightclick:
+    if player is holding stick named "罠設置":
+        if {wana.%location at event-block%} is not set:
+            set {wana.%location at event-block%} to "true"
+            send "§3罠を設置しました"
+        else:
+            send "§c既に罠を設置しています"
+    else if player is holding stick named "罠撤去":
+        execute console command "/execute as %player% at @s run fill ~4 ~-9 ~5 ~-5 ~-1 ~-4 air replace bedrock"
+        execute console command "/execute as %player% at @s run fill ~4 ~-9 ~5 ~-5 ~-1 ~-4 air replace lava"
+        execute console command "/execute as %player% at @s run fill ~4 ~-9 ~5 ~-5 ~-1 ~-4 air replace cobweb"
+        send "§c撤去しました"
+
+On Break:
+    if {wana.%location at event-block%} is set:
+        cancel event
+        broadcast "§c%player%が罠に引っかかりました"
+        execute console command "/execute as %player% at @s run tp @s ~ ~10 ~"
+        execute console command "/execute as %player% at @s run fill ~4 ~-3 ~4 ~-4 ~4 ~-4 bedrock hollow"
+        execute console command "/execute as %player% at @s run fill ~3 ~-2 ~3 ~-3 ~3 ~-3 lava hollow"
+        execute console command "/execute as %player% at @s run fill ~2 ~-1 ~2 ~-2 ~2 ~-2 bedrock hollow"
+        execute console command "/execute as %player% at @s run fill ~2 ~-1 ~2 ~-2 ~2 ~-2 cobweb replace air"
+        set player's gamemode to adventure
+        set the player's display name to "§4捕獲中"
+        set the player's tablist name to "§4捕獲中"

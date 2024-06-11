@@ -1,0 +1,69 @@
+command /reset:
+    trigger:
+        delete {pet.%player%}
+
+On damage:
+    attacker is player
+    victim is iron golem
+    attacker's tool is iron ingot
+    if victim has scoreboard tag "pet":
+    else:
+        if {pet.%attacker%} is set:
+            send "§cペットを大切にしましょう！" to attacker
+            stop
+        cancel event
+        remove iron ingot from attacker's tool
+        send "§3野良のアイアンゴーレムと契約をした" to attacker
+        set name of victim to "§6%attacker%のペット"
+        execute console command "/data merge entity %victim's UUID% {Tags:[pet,%attacker's UUID%],CustomNameVisible:true}"
+        set {pet.%attacker%} to victim
+
+On inventory click:
+    name of clicked inventory is "&aペットメニュー"
+    cancel event
+    if clicked slot is name tag:
+        set {type.%player%} to "set"
+    else if clicked slot is saddle:
+        set passenger of {pet.%player%} to player
+    else if clicked slot is redstone:
+        set name of {pet.%player%} to "§1元%player%のペット"
+        execute console command "/data merge entity %{pet.%player%}'s UUID% {CustomNameVisible:false}"
+        execute console command "/tag %{pet.%player%}'s UUID% remove pet"
+        execute console command "/tag %{pet.%player%}'s UUID% remove %player's UUID%"
+        delete {pet.%player%}
+        send "§cさよなら…"
+    close player's inventory
+
+On damage:
+    victim has scoreboard tag "%attacker's UUID%"
+    cancel event
+    send "§cペットを大切にしましょう！" to attacker
+
+On Sneak Toggle:
+    if {sneak.%player%} is set:
+        delete {sneak.%player%}
+        stop
+    set {sneak.%player%} to "sneak"
+    loop entities in radius 3 around player:
+        loop-entity has scoreboard tag "%player's UUID%"
+        open chest inventory with 1 row named "&aペットメニュー" to player
+        set slot 2 of player's current inventory to name tag named "名前をつける"
+        set slot 4 of player's current inventory to saddle named "§6乗る"
+        set slot 6 of player's current inventory to redstone named "§c手放す"
+        stop
+    wait 60 ticks
+    player is sneaking
+    teleport {pet.%player%} to player
+    send "§3ペットを呼んだ"
+
+On damage:
+    {pet.%victim%} is set
+    teleport {pet.%victim%} to attacker
+    set passenger of {pet.%victim%} to victim
+
+On chat:
+    {type.%player%} is set
+    set name of {pet.%player%} to "§6%message%"
+    cancel event
+    send "§6名前を変えました"
+    delete {type.%player%}

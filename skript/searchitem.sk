@@ -1,0 +1,73 @@
+on rightclick:
+    if player is holding blaze rod named "鉱石探知機":
+        set {count.diamond} to 0
+        set {count.emerald} to 0
+        set {count.iron} to 0
+        set {count.redstone} to 0
+        set {count.coal} to 0
+        set {count.quartz} to 0
+        set {count.gold} to 0
+
+        loop blocks in radius 10 around player:
+            if loop-blocks is gold ore:
+                add 1 to {count.gold}
+            else if loop-blocks is diamond ore:
+                add 1 to {count.diamond}
+            else if loop-blocks is emerald ore:
+                add 1 to {count.emerald}
+            else if loop-blocks is iron ore:
+                add 1 to {count.iron}
+            else if loop-blocks is redstone ore:
+                add 1 to {count.redstone}
+            else if loop-blocks is coal ore:
+                add 1 to {count.coal}
+            else if loop-block is nether quartz ore:
+                add 1 to {count.quartz}
+        
+        open chest inventory with 1 row named "§3近くの鉱石一覧" to player
+        set slot 0 of player's current inventory to coal ore named "発見数:%{count.coal}%個"
+        set slot 1 of player's current inventory to iron ore named "発見数:%{count.iron}%個"
+        set slot 2 of player's current inventory to gold ore named "発見数:%{count.gold}%個"
+        set slot 3 of player's current inventory to redstone ore named "発見数:%{count.redstone}%個"
+        set slot 4 of player's current inventory to emerald ore named "発見数:%{count.emerald}%個"
+        set slot 5 of player's current inventory to diamond ore named "発見数:%{count.diamond}%個"
+        set slot 6 of player's current inventory to nether quartz ore named "発見数:%{count.quartz}%個"
+
+On inventory click:
+    name of clicked inventory is "§3近くの鉱石一覧"
+    cancel event
+    if clicked slot is diamond ore:
+        loop blocks in radius 10 around player:
+            if loop-block is diamond ore:
+                delete loop-block
+                give diamond to player
+    if clicked slot is coal ore:
+        loop blocks in radius 10 around player:
+            if loop-block is coal ore:
+                delete loop-block
+                give coal to player
+    if clicked slot is iron ore:
+        loop blocks in radius 10 around player:
+            if loop-block is iron ore:
+                delete loop-block
+                give iron ingot to player
+    if clicked slot is gold ore:
+        loop blocks in radius 10 around player:
+            if loop-block is gold ore:
+                delete loop-block
+                give gold ingot to player
+    if clicked slot is redstone ore:
+        loop blocks in radius 10 around player:
+            if loop-block is redstone ore:
+                delete loop-block
+                give redstone to player
+    if clicked slot is emerald:
+        loop blocks in radius 10 around player:
+            if loop-block is emerald ore:
+                delete loop-block
+                give emerald to player
+    if clicked slot is nether quartz ore:
+        loop blocks in radius 10 around player:
+            if loop-block is nether quartz ore:
+                delete loop-block
+                give quartz to player

@@ -1,0 +1,78 @@
+On right click:
+    event-block is iron block
+
+    loop all entities in radius 2 around event-block:
+        loop-entity is item frame
+
+        if {lock.%location of event-block%} is set:
+            cancel event
+            if player's tool is not tripwire hook:
+                send "§cカギがかかっているようだ"
+                play sound "block.note_block.bell" with volume 1 to player
+            else:
+                if name of player's tool is {lock.%location of event-block%}:
+                    send "§aロックを解除しました"
+                    play sound "block.anvil.use" with volume 1 to player
+                    delete {lock.%location of event-block%}
+                    set player's tool to tripwire hook
+                    set loop-entity's item to iron ingot
+                else:
+                    send "§cカギが合わないようだ"
+                    play sound "block.note_block.bell" with volume 1 to player
+            stop
+
+        if event-item is tripwire hook:
+            cancel event
+
+            if loop-entity's item is iron ingot:
+                set {_x} to event-block's x-coordinate
+                set {_y} to event-block's y-coordinate
+                set {_z} to event-block's z-coordinate
+
+                set {_uuidlist::*} to "0","1","2","3","4","5","6","7","8","9","a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z","A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z"
+                set {_s} to size of {_uuidlist::*}
+                set {_uuid} to "lockkey:"
+                loop 5 times:
+                    set {_r} to random integer from 1 to {_s}
+                    set {_uuid} to "%{_uuid}%%{_uuidlist::%{_r}%}%"
+
+                set player's tool to tripwire hook of unbreaking named "ロッカーキー(%{_uuid}%)" with lore "x:%{_x}% y:%{_y}% z:%{_z}%のカギ"
+
+                set {lock.%location of event-block%} to "ロッカーキー(%{_uuid}%)"
+
+                send "§cカギをかけた"
+                play sound "block.anvil.use" with volume 1 to player
+
+                set loop-entity's item to barrier block of unbreaking named "§cロック中"
+                
+            else:
+                send "§c鉄を入れてください"
+                play sound "block.note_block.bell" with volume 1 to player
+
+            stop
+        
+        open chest inventory with 2 row named "&3コインロッカー" to player
+
+        play sound "block.chest.open" with volume 1 to player
+
+        set {_i} to 0
+
+        set {open.%player%} to location of event-block
+
+        loop 18 times:
+            set slot {_i} of player's current inventory to {coin.%location of event-block%::%{_i} + 1%}
+            add 1 to {_i}
+
+        stop
+
+On inventory close:
+    {open.%player%} is set
+
+    play sound "block.chest.close" with volume 1 to player
+    set {_i} to 0
+
+    loop 18 times:
+        set {coin.%{open.%player%}%::%{_i} + 1%} to slot {_i} of player's current inventory
+        add 1 to {_i}
+ 
+    delete {open.%player%}

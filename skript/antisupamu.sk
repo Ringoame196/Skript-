@@ -1,0 +1,46 @@
+on chat:
+    if {mute.%player%} is "mute":
+        cancel event
+        send "§cあなたはミュートされています"
+    else:
+        if {chat.%player%} is message:
+            cancel event
+            send "§c同じチャットを送信することはできません"
+            add 1 to {chatcount.%player%}
+            if {chatcount.%player%} >= 3:
+                execute console command "/kick %player%"
+                broadcast "§c%player%は スパムを3回したためkickされました"
+        else:
+            set {chat.%player%} to message
+            set {chatcount.%player%} to 0
+            add 0 to {cool.%player%}
+            if {cool.%player%} is 1:
+                cancel event
+                send "§cもっとゆっくりチャットしましょう"
+            else:
+                set {cool.%player%} to 1
+                wait 3 seconds
+                set {cool.%player%} to 0
+
+command /mute <player>:
+    permission: skript.admin
+    trigger:
+        if {mute.%player%} is "mute":
+            send "§3%arg-1%さんのミュートを解除しました"
+            set {mute.%player%} to "unmute"
+        else:
+            send "§c%arg-1%さんをミュートにしました"
+            set {mute.%player%} to "mute"
+
+on command "/w":
+    if {mute.%player%} is "mute":
+        cancel event
+        send "§cあなたはミュートされています"
+on command "/tell":
+    if {mute.%player%} is "mute":
+        cancel event
+        send "§cあなたはミュートされています"
+on command "/msg":
+    if {mute.%player%} is "mute":
+        cancel event
+        send "§cあなたはミュートされています"

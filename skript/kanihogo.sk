@@ -1,0 +1,36 @@
+On Script Load:
+    set {rm} to "§c保護がかかっています"
+
+On break:
+    loop blocks in radius 8 around event-block:
+        loop-block is dropper
+        slot 4 of loop-block's inventory is paper named "保護"
+        if loop-block's inventory contains player head named "%player%":
+        else:
+            cancel event
+            send "%{rm}%"
+    
+On Place:
+    loop blocks in radius 8 around event-block:
+        loop-block is dropper
+        slot 4 of loop-block's inventory is paper named "保護"
+        if loop-block's inventory contains player head named "%player%":
+        else:
+            cancel event
+            send "%{rm}%"
+
+On right click:
+    event-block is not dropper
+    loop blocks in radius 8 around event-block:
+        loop-block is dropper
+        slot 4 of loop-block's inventory is paper named "保護"
+        if loop-block's inventory contains player head named "%player%":
+        else:
+            cancel event
+            send "%{rm}%"
+
+On Explode:
+    loop blocks in radius 8 around event-entity:
+        loop-block is dropper
+        slot 4 of loop-block's inventory is paper named "保護"
+        cancel event

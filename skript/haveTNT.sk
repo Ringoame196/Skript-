@@ -1,0 +1,55 @@
+On right click:
+    event-block is tnt block
+    event-item is not set
+    set block at event-block to air
+    set {_name} to "notnt"
+    execute player command "summon minecraft:tnt ~ ~ ~ {Fuse:1200}"
+    play sound "block.piston.contract" with volume 1 to player
+
+
+    set {_i} to 0
+    loop 9 times:
+        set {inv.%player%::%{_i}+ 1%} to slot {_i} of player's inventory
+        set slot {_i} of player's inventory to tnt of unbreaking 5 named "§a投げる"
+        add 1 to {_i}
+
+    loop all entities in radius 1 around player:
+        loop-entity is tnt
+        make loop-entity ride player
+        stop
+
+On right click:
+    event-item is tnt named "§a投げる"
+    loop all entities in radius 3 around player:
+        loop-entity is tnt
+        kill loop-entity
+
+        shoot an tnt at speed 1.5
+
+        set {_i} to 0
+        loop 9 times:
+            set slot {_i} of player's inventory to {inv.%player%::%{_i} + 1%}
+            add 1 to {_i}
+        play sound "entity.arrow.hit_player" with volume 1 to player
+        stop
+
+On damage:
+    victim is player
+    victim's inventory contains tnt named "§a投げる"
+    loop all entities in radius 3 around victim:
+        loop-entity is tnt
+        kill loop-entity
+
+        set {_i} to 0
+        loop 9 times:
+            set slot {_i} of victim's inventory to {inv.%victim%::%{_i} + 1%}
+            add 1 to {_i}
+        
+        create an explosion of force 5 at the victim
+
+        stop
+
+every seconds:
+    loop all players:
+        loop-player's inventory contains tnt named "§a投げる"
+        play sound "ui.button.click" with volume 1 to loop-player

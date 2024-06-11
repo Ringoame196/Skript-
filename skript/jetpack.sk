@@ -1,0 +1,23 @@
+On Sneak Toggle:
+    player is not sneaking
+    slot 38 of player is golden chestplate named "ジェットパック"
+    loop 100 times:
+        if player's off hand tool is not gunpowder:
+            send "§c燃料切れ"
+            play sound "block.fire.extinguish" with volume 1 to player
+            stop
+        remove 1 of gunpowder from player's off hand tool
+        push the player upwards at speed 0.6
+        push the player infront at speed 0.4
+        show flame at the player to the player
+        play sound "entity.snowball.throw" with volume 1 to player
+        wait 5 ticks
+        if player is not sneaking:
+            apply slow falling 255 to the player for 1 second
+            play sound "block.fire.extinguish" with volume 1 to player
+            stop
+
+On damage:
+    slot 38 of victim is golden chestplate named "ジェットパック"
+    damage cause is fall
+    cancel event

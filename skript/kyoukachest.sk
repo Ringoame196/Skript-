@@ -1,0 +1,93 @@
+On right click:
+    event-block is obsidian
+    if {chest.pass.%location of event-block%} is set:
+        cancel event
+        play sound "block.chest.locked" with volume 1 to player
+        set {clickblock.%player%} to location of event-block
+        set {c.%player%} to 0
+        set {type.%player%} to ""
+
+        open chest inventory with 3 row named "&aパスワード" to player
+        set {_i} to 1
+        loop 9 times:
+            set slot {_i} + 8 of player's current inventory to snowball named "%{_i}%"
+            add 1 to {_i}
+        set slot 18 of player's current inventory to snowball named "0"
+        set {_i} to 0
+        loop 9 times:
+            set slot {_i} of player's current inventory to orange stained glass pane named " "
+            add 1 to {_i}
+        
+        set {_i} to 1
+        loop 4 times:
+            set slot {_i} of player'S current inventory to gray stained glass pane named " "
+            add 2 to {_i}
+        
+        if {chest.pass.%{clickblock.%player%}%} is "set":
+            set slot 26 of player's current inventory to redstone named "§3登録"
+        else:
+            set slot 26 of player's current inventory to emerald named "§2認証"
+    else:
+        if event-item is chest:
+            cancel event
+            send "§6黒曜石チェストを作成しました"
+            set player's tool to air
+            play sound "block.anvil.use" with volume 1 to player
+            set {chest.pass.%location of event-block%} to "set"
+
+On inventory click:
+    name of clicked inventory is "&aパスワード"
+    cancel event
+    play sound "block.dispenser.dispense" with volume 1 to player
+    if clicked slot is snowball:
+        {c.%player%} < 4
+        add 1 to {c.%player%}
+        set slot {c.%player%} * 2 -1 of player's current inventory to blue stained glass pane named " "
+        
+        set {_i} to 0
+        set {_s} to 0
+        loop 10 times:
+            if clicked slot is snowball named "%{_i}%":
+                set {_s} to {_i}
+            add 1 to {_i}
+        set {type.%player%} to "%{type.%player%}%%{_s}%"
+    else if clicked slot is redstone named "§3登録":
+        {c.%player%} is 4
+        set {chest.pass.%{clickblock.%player%}%} to {type.%player%}
+        send "§3パスワードを設定しました"
+        open chest inventory with 3 row named "チェスト" to player
+        play sound "block.chest.open" with volume 1 to player
+        set {open.%player%} to "true"
+    else if clicked slot is emerald named "§2認証":
+        if {type.%player%} is {chest.pass.%{clickblock.%player%}%}:
+            open chest inventory with 3 row named "チェスト" to player
+            set {_i} to 0
+            loop 27 times:
+                set slot {_i} of player's current inventory to {chest.%{clickblock.%player%}%::%{_i}%}
+                add 1 to {_i}
+            set {open.%player%} to "true"
+            play sound "block.chest.open" with volume 1 to player
+        else:
+            close player's inventory
+            send "§cパスワードが合っていません"
+            play sound "block.chest.locked" with volume 1 to player
+
+On inventory close:
+    {open.%player%} is set
+    play sound "block.chest.close" with volume 1 to player
+    set {_i} to 0
+    loop 27 times:
+        set {chest.%{clickblock.%player%}%::%{_i}%} to slot {_i} of player's current inventory
+        add 1 to {_i}
+    delete {open.%player%}
+
+On break:
+    set block at location at location of event-block to chest
+    set {_i} to 0
+    loop 27 times:
+        set slot {_i} of block at location at location of event-block to {chest.%location of event-block%::%{_i}%}
+        add 1 to {_i}
+    delete {chest.pass.%location of event-block%}
+    delete {chest.%location of event-block%::*}
+    delete block at location at location of event-block
+    set block at location at location of event-block to air

@@ -1,0 +1,18 @@
+On right click:
+    event-block is gold block
+    event-item is clock
+    set {_x} to event-block's x-coordinate
+    set {_y} to event-block's y-coordinate - 1
+    set {_z} to event-block's z-coordinate
+    execute console command "/summon minecraft:armor_stand %{_x}% %{_y}% %{_z}% {Invisible:true,CustomNameVisible:true,Tags:[nowtime],DisabledSlots:16}"
+    execute console command "/replaceitem entity @e[type=minecraft:armor_stand,tag=nowtime] armor.head clock"
+    set block over the event-block to glass
+
+every seconds:
+    loop all entities:
+        loop-entity is armor stand
+        helmet of loop-entity is clock
+        set name of loop-entity to "%now%.%now formatted as "s"%"
+        block over the loop-entity is not gold block
+        kill loop-entity
+        set block over the block over the loop-entity to air

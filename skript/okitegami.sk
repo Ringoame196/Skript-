@@ -1,0 +1,64 @@
+On right click:
+    player's tool is book named "置き手紙"
+    if {write.%player%} is not set:
+        send "§a[置き手紙]メッセージを入力してください"
+        play sound "BLOCK_CHEST_OPEN" with volume 1 to player
+        set {write.%player%} to "set"
+    else:
+        delete {write.%player%}
+        send "§c[置き手紙]書くことをやめた"
+        play sound "BLOCK_CHEST_CLOSE" with volume 1 to player
+
+On chat:
+    {write.%player%} is set
+    open chest inventory with 1 row named "&3置き手紙" to player
+    set slot 3 of player's current inventory to paper named "%message%"
+    set slot 5 of player's current inventory to FEATHER named "書き込む"
+    play sound "BLOCK_CHEST_OPEN" with volume 1 to player
+    delete {write.%player%}
+    cancel event
+
+On inventory click:
+    name of clicked inventory is "&3置き手紙"
+    cancel event
+    clicked slot is FEATHER named "書き込む"
+    set {message.%player%} to name of slot 3 of player's current inventory
+    close player's inventory
+    set player's tool to book of unbreaking named "§a置き手紙"
+    send "§6手紙を書き終えた"
+    play sound "BLOCK_ANVIL_USE" with volume 1 to player
+
+On Drop:
+    event-item is book of unbreaking named "§a置き手紙"
+    cancel event
+    wait 1 tick
+    set player's tool to air
+    spawn armor stand -1.7 meters above the player
+    loop all entities in radius 2 around player:
+        loop-entity is armor stand
+        set helmet of loop-entity to book named "置き手紙"
+        set name of loop-entity to "%{message.%player%}%"
+        execute console command "/data merge entity %loop-entity's UUID% {Invisible:true}"
+        send "§a手紙を置いた"
+        stop
+
+On Sneak Toggle:
+    player is sneaking
+    loop all entities in radius 2 around player:
+        loop-entity is armor stand
+        helmet of loop-entity is book named "置き手紙"
+        set {m.%player%} to name of loop-entity
+        send "§a置き手紙を見つけた！ <run command:/write>[読む]"
+        play sound "block.note_block.xylophone" with volume 1 to player
+        cancel event
+        stop
+
+On right click:
+    target is armor stand
+    helmet of target is book named "置き手紙"
+    cancel event
+
+command /write:
+    trigger:
+        play sound "BLOCK_NOTE_BLOCK_BELL" with volume 1 to player
+        send "§6[置き手紙]%{m.%player%}%"

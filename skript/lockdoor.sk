@@ -1,0 +1,88 @@
+on rightclick:
+    if event-block is door:
+        if {lock.%location at event-block%} is set:
+            if {permission.%player%} is location at event-block:
+                cancel event
+                set {x} to event-block's x-coordinate - 0.5
+                set {y} to event-block's y-coordinate + 1
+                set {y} to {y} -0.5
+                set {z} to event-block's z-coordinate - 0.5
+                set {coordinate} to "%{x}% %{y}% %{z}%"
+                delete {permission.%player%}
+                execute console command "/setblock %{coordinate}% redstone_block"
+                wait 3 seconds
+                execute console command "/setblock %{coordinate}% air"
+            else:
+                cancel event
+                set {door.%player%} to location at event-block
+                delete {type.%player%}
+                open chest inventory with 4 row named "&3入力" to player
+                set slot 0 of player's current inventory to paper named "ロック解除"
+                set {_i} to 4
+                set {_n} to 1
+                loop 3 times:
+                    set slot {_i} of player's current inventory to emerald named "%{_n}%"
+                    add 1 to {_n}
+                    add 1 to {_i}
+                    set slot {_i} of player's current inventory to emerald named "%{_n}%"
+                    add 1 to {_n}
+                    add 1 to {_i}
+                    set slot {_i} of player's current inventory to emerald named "%{_n}%"
+                    add 1 to {_n}
+                    add 7 to {_i}
+                    set slot 32 of player's current inventory to emerald named "0"
+                    set slot 33 of player's current inventory to redstone block named "§4消す"
+                    set slot 11 of player's current inventory to book named "入力:"
+                    set slot 20 of player's current inventory to gold block named "§6解除"
+        else:
+            if player is holding tripwire hook named "ロック":
+                cancel event
+                set {door.%player%} to location at event-block
+                delete {type.%player%}
+                open chest inventory with 4 row named "&3入力" to player
+                set slot 0 of player's current inventory to paper named "ロック設定"
+                set {_i} to 4
+                set {_n} to 1
+                loop 3 times:
+                    set slot {_i} of player's current inventory to emerald named "%{_n}%"
+                    add 1 to {_n}
+                    add 1 to {_i}
+                    set slot {_i} of player's current inventory to emerald named "%{_n}%"
+                    add 1 to {_n}
+                    add 1 to {_i}
+                    set slot {_i} of player's current inventory to emerald named "%{_n}%"
+                    add 1 to {_n}
+                    add 7 to {_i}
+                set slot 32 of player's current inventory to emerald named "0"
+                set slot 33 of player's current inventory to redstone block named "§4消す"
+                set slot 11 of player's current inventory to book named "入力:"
+                set slot 20 of player's current inventory to emerald block named "§6ロック"
+
+on inventory click:
+    name of clicked inventory is "&3入力"
+    play sound "block.dispenser.dispense" with volume 1 and pitch 1 at player
+    cancel event
+    if clicked slot is emerald:
+        set {_i} to 0
+        loop 10 times:
+            if clicked slot is emerald named "%{_i}%":
+                set {type.%player%} to {type.%player%} * 10
+                set {type.%player%} to {type.%player%} + {_i}
+                set slot 11 of player's current inventory to book named "入力:%{type.%player%}%"                
+                stop
+            add 1 to {_i}
+    else if clicked slot is redstone block:
+        set slot 11 of player's current inventory to book named "入力:"
+        delete {type.%player%}
+    else if clicked slot is emerald block:
+        set {lock.%{door.%player%}%} to {type.%player%}
+        close player's inventory
+        send "§3ロックしました"
+    else if clicked slot is gold block:
+        if {lock.%{door.%player%}%} is {type.%player%}:
+            send "認証"
+            set {permission.%player%} to {door.%player%}
+            close player's inventory
+        else:
+            send "§cパスワードが間違っています"
+            close player's inventory

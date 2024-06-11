@@ -1,0 +1,23 @@
+On right click:
+    player's tool is GLASS BOTTLE
+    block over the event-block is lava
+    set player's offhand tool to DRAGON BREATH named "§c火炎瓶"
+    set player's tool to air
+    play sound "block.fire.extinguish" with volume 1 to player
+
+On right click:
+    player's tool is DRAGON BREATH named "§c火炎瓶"
+    shoot an arrow at speed 0.5
+    play sound "entity.arrow.shoot" with volume 1 to player
+
+On Projectile Hit:
+    Projectile is arrow
+    shooter's tool is DRAGON BREATH named "§c火炎瓶"
+
+    loop blocks in radius 10 around Projectile:
+        loop-block is air
+        set loop-block to fire
+
+    kill Projectile
+    play sound "entity.generic.explode" with volume 1 to shooter
+    set shooter's tool to air

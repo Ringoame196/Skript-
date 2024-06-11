@@ -1,0 +1,36 @@
+On right click:
+    event-block is furnace
+    slot 0 of event-block's inventory is tnt
+    cancel event
+
+    if event-item is flint and steel:
+        set {clickblock.%player%} to event-block
+
+        open chest inventory with 1 row named "&4時限爆弾" to player
+        set {time.%player%} to 0
+        set slot 3 of player's current inventory to arrow named "§2-1"
+        set slot 4 of player's current inventory to clock named "時間:0秒"
+        set slot 5 of player's current inventory to arrow named "§6+1"
+
+On inventory click:
+    name of clicked inventory is "&4時限爆弾"
+    cancel event
+    play sound "block.note_block.bit" with volume 1 to player
+    if clicked slot is arrow:
+        if clicked slot is arrow named "§2-1":
+            remove 1 from {time.%player%}
+        else if clicked slot is arrow named "§6+1":
+            add 1 to {time.%player%}
+        set slot 4 of player's current inventory to clock named "時間:%{time.%player%}%秒"
+    
+    else if clicked slot is clock:
+        close player's inventory
+        send "§c%{time.%player%}%秒後に爆発します"
+        loop {time.%player%} times:
+            wait 1 seconds
+            play sound "block.dispenser.fail" with volume 1 to player
+        create an explosion of force 10 at location of {clickblock.%player%}
+        loop blocks in radius 10 around location of {clickblock.%player%}:
+            loop-block is air
+            block under the loop-block is not air
+            set block at loop-block to fire

@@ -1,0 +1,69 @@
+command /color:
+    trigger:
+        open chest inventory with 1 row named "&5色付け" to player
+        set slot 0 of player's current inventory to red dye named "赤"
+        set slot 1 of player's current inventory to orange dye named "オレンジ"
+        set slot 2 of player's current inventory to blue dye named "青"
+        set slot 3 of player's current inventory to lime dye named "黄緑"
+
+        set slot 4 of player's current inventory to leather helmet
+        set slot 5 of player's current inventory to leather chestplate
+        set slot 6 of player's current inventory to leather leggings
+        set slot 7 of player's current inventory to leather boots
+        set slot 8 of player's current inventory to leather horse armor
+
+        delete {color.%player%}
+        delete {item.%player%}
+
+On inventory click:
+    name of clicked inventory is "&5色付け"
+    cancel event
+    if clicked slot is dye:
+        set slot 0 of player's current inventory to red dye named "赤"
+        set slot 1 of player's current inventory to orange dye named "オレンジ"
+        set slot 2 of player's current inventory to blue dye named "青"
+        set slot 3 of player's current inventory to lime dye named "黄緑"
+
+        if clicked slot is red dye:
+            set {color.%player%} to "11546150"
+            set slot 0 of player's current inventory to red dye of unbreaking 1 named "赤"
+        else if clicked slot is orange dye:
+            set {color.%player%} to "16351261"
+            set slot 1 of player's current inventory to orange dye of unbreaking 1 named "オレンジ"
+        else if clicked slot is blue dye:
+            set {color.%player%} to "3949738"
+            set slot 2 of player's current inventory to blue dye of unbreaking 1 named "青"
+        else if clicked slot is lime dye:
+            set {color.%player%} to "8439583"
+            set slot 3 of player's current inventory to lime dye of unbreaking 1 named "黄緑"
+    else:
+        set slot 4 of player's current inventory to leather helmet
+        set slot 5 of player's current inventory to leather chestplate
+        set slot 6 of player's current inventory to leather leggings
+        set slot 7 of player's current inventory to leather boots
+        set slot 8 of player's current inventory to leather horse armor
+
+        if clicked slot is leather helmet:
+            set {item.%player%} to "helmet"
+            set slot 4 of player's current inventory to leather helmet of unbreaking 1
+        else if clicked slot is leather chestplate:
+            set {item.%player%} to "chestplate"
+            set slot 5 of player's current inventory to leather chestplate of unbreaking 1
+        else if clicked slot is leather leggings:
+            set {item.%player%} to "leggings"
+            set slot 6 of player's current inventory to leather leggings of unbreaking 1
+        else if clicked slot is leather boots:
+            set {item.%player%} to "boots"
+            set slot 7 of player's current inventory to leather boots of unbreaking 1
+        else if clicked slot is leather horse armor:
+            set {item.%player%} to "horse_armor"
+            set slot 8 of player's current inventory to leather horse armor of unbreaking 1
+
+    {item.%player%} is set 
+    {color.%player%} is set
+    execute console command "/give %player% leather_%{item.%player%}%{display:{color:%{color.%player%}%}}"
+    close player's inventory
+    delete {color.%player%}
+    delete {item.%player%}
+
+    send "§6色つけ完了"

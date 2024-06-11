@@ -1,0 +1,96 @@
+command /eawase:
+    trigger:
+        set {_item::*} to apple,apple,command block,command block,diamond,diamond,diamond sword,diamond sword,tnt
+
+        open chest inventory with 3 row named "&3絵合わせ" to player
+        set {_i} to 3
+        set {_s} to 0
+        set {time.%player%} to 0
+        delete {clear.%player%::*}
+        delete {cordselect.%player%::*}
+        delete {click.%player%}
+        loop 9 times:
+            set slot {_i} of player's current inventory to paper named "カード"
+            
+            set {_ss} to size of {_item::*}
+            set {_r} to random integer from 1 to {_ss}
+
+            set {cord.%player%.%{_i}%} to {_item::%{_r}%}
+            delete {_item::%{_r}%}
+
+            set {_ii} to 1
+            loop {_ss} + 1 times:
+                if {_item::%{_ii}%} is set:
+                    add {_item::%{_ii}%} to {_sublist::*}
+                add 1 to {_ii}
+            
+            set {_item::*} to {_sublist::*}
+            delete {_sublist::*}
+
+            add 1 to {_i}
+            add 1 to {_s}
+            if {_s} is 3:
+                add 6 to {_i}
+                set {_s} to 0
+
+on inventory click:
+    name of clicked inventory is "&3絵合わせ"
+    cancel event
+    event-item is paper
+    if {n.%player%} is set:
+        send "§cクールダウン中"
+        play sound "block.fire.extinguish" with volume 1 to player
+        stop
+    play sound "block.dispenser.dispense" with volume 1 to player
+    add 1 to {click.%player%}
+    set {_i} to 0
+    loop 27 times:
+        if event-slot is {_i}:
+            set slot {_i} of player's current inventory to {cord.%player%.%{_i}%}
+            add event-item to {cordselect.%player%::*}
+            size of {cordselect.%player%::*} >= 2
+            set {_s1} to {cordselect.%player%::1}
+            set {_s2} to {cordselect.%player%::2}
+            delete {cordselect.%player%::*}
+            if {_s1} is {_s2}:
+                send "§aあたり"
+                add {_s1} to {clear.%player%::*}
+                play sound "block.bell.use" with volume 1 to player
+            else:
+                play sound "block.piston.contract" with volume 1 to player
+                set {n.%player%} to "n"
+                wait 10 ticks
+                delete {n.%player%}
+                
+                set {_s} to 0
+                set {_i} to 3
+                {time.%player%} is set
+                loop 9 times:
+                    set {_item} to slot {_i} of player's current inventory
+                    if {clear.%player%::*} contains {_item}:
+                    else:
+                        set slot {_i} of player's current inventory to paper named "カード"
+                    add 1 to {_i}
+                    add 1 to {_s}
+                    if {_s} is 3:
+                        add 6 to {_i}
+                        set {_s} to 0
+                stop
+        add 1 to {_i}
+    
+    if player's current inventory has paper:
+    else:
+        send "§6ーーーークリアーーーー"
+        send "§a%{click.%player%}%クリックでクリア"
+        send "§3クリア時間：%{time.%player%}%秒"
+        play sound "block.anvil.use" with volume 1 to player
+        close player's inventory
+        stop
+
+every a second:
+    loop all players:
+        {time.%loop-player%} is set
+        add 1 to {time.%loop-player%}
+
+on inventory close:
+    delete {time.%player%}

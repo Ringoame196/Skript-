@@ -1,0 +1,22 @@
+On rightclick:
+    event-item is golden shovel
+    if event-block is grass block:
+    else if event-block is dirt:
+    else:
+        stop
+    cancel event
+    set {_list::*} to seeds,seeds,seeds,seeds,seeds,diamond,poppy,poppy,poppy,poppy,poppy
+    set {_r} to random integer from 1 to 11
+    set block over the event-block to chest
+    set slot 0 of block over the event-block to {_list::%{_r}%}
+    set block over the event-block to air
+    if {_list::%{_r}%} is seeds:
+        send "§a種を発見した！"
+    else if {_list::%{_r}%} is diamond:
+        send "§aダイヤモンドを発見した！"
+    else if {_list::%{_r}%} is poppy:
+        send "§aポピーを発見した！"
+
+command /test:
+    trigger:
+        send "%player's tool%"

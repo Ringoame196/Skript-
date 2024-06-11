@@ -1,0 +1,98 @@
+On right click:
+    event-block is observer
+    block under the event-block is gold block
+
+    open chest inventory with 1 row named "&3銀行" to player
+    if {ginkou.%player%} is not set:
+        set {_i} to 0
+        loop 9 times:
+            set slot {_i} of player's current inventory to barrier named "§c選択不可"
+            add 1 to {_i}
+        
+        set slot 4 of player's current inventory to emerald block named "§2開設"
+    else:
+        set {open.%player%} to "true"
+        set {_i} to 0
+        loop 9 times:
+            set slot {_i} of player's current inventory to barrier named "§c選択不可"
+            add 1 to {_i}
+        
+        add 0 to {ginkou.%player%}
+        set slot 1 of player's current inventory to command block named "§6預金:%{ginkou.%player%}%エメラルド"
+        set slot 2 of player's current inventory to air
+        set slot 3 of player's current inventory to gold ingot named "§3入金"
+        set slot 5 of player'S current inventory to diamond named "§2引き出す"
+        set slot 7 of player's current inventory to redstone block named "§c口座を閉める"
+
+On inventory click:
+    name of clicked inventory is "&3銀行"
+    play sound "block.dispenser.dispense" with volume 1 to player
+    clicked slot is not emerald
+    clicked slot is not air
+    cancel event
+    if clicked slot is emerald block:
+        set {ginkou.%player%} to 0
+        send "§5口座を開設しました"
+        close player's inventory
+    else if clicked slot is redstone block:
+        add {ginkou.%player%} of emerald to player's inventory
+        send "§c口座を閉じました"
+        delete {ginkou.%player%}
+        close player's inventory
+    else if clicked slot is gold ingot:
+        set {_i} to 64
+        loop 64 times:
+            if player's current inventory has {_i} of emerald:
+                set {_c} to {_i}
+                delete {open.%player%}
+                add {_c} to {ginkou.%player%}
+                send "§6%{_c}%エメラルド入金しました"
+                close player's inventory
+                stop
+            remove 1 from {_i}
+    else if clicked slot is diamond:
+        set {money.%player%} to 0
+        open chest inventory with 2 row named "&2引き出し" to player
+        set slot 0 of player's current inventory to emerald named "§20エメラルド"
+        set slot 2 of player's current inventory to arrow named "+100"
+        set slot 3 of player's current inventory to arrow named "+10"
+        set slot 4 of player's current inventory to arrow named "+1"
+        set slot 11 of player's current inventory to arrow named "-100"
+        set slot 12 of player's current inventory to arrow named "-10"
+        set slot 13 of player's current inventory to arrow named "-1"
+        set slot 9 of player's current inventory to diamond named "引き出し"
+
+On inventory click:
+    name of clicked inventory is "&2引き出し"
+    cancel event
+    play sound "block.dispenser.dispense" with volume 1 to player
+    if clicked slot is arrow:
+        if clicked slot is arrow named "+1":
+            add 1 to {money.%player%}
+        else if clicked slot is arrow named "+10":
+            add 10 to {money.%player%}
+        else if clicked slot is arrow named "+100":
+            add 100 to {money.%player%}
+        
+        else if clicked slot is arrow named "-1":
+            remove 1 from {money.%player%}
+        else if clicked slot is arrow named "-10":
+            remove 10 from {money.%player%}
+        else if clicked slot is arrow named "-100":
+            remove 100 from {money.%player%}
+        if {money.%player%} < 0:
+            set {money.%player%} to 0
+        set slot 0 of player's current inventory to emerald named "§2%{money.%player%}%エメラルド"
+    else if clicked slot is diamond:
+        close player's inventory
+        if {money.%player%} <= {ginkou.%player%}:
+            remove {money.%player%} from {ginkou.%player%}
+            add {money.%player%} of emerald to player's inventory
+            send "§2%{money.%player%}%エメラルド引き出しました"
+        else:
+            send "§cお金が引き出せませんでした"
+
+On inventory close:
+    {open.%player%} is set
+    add slot 2 of player's current inventory to player's inventory
+    delete {open.%player%}

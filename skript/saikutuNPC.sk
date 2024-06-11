@@ -1,0 +1,72 @@
+On right click:
+    event-item is iron block named "採掘NPC"
+    event-block is observer
+    cancel event
+    spawn a armor stand -0.5 meters above the event-block:
+    loop all entities in radius 1 around event-block:
+        loop-entity is armor stand
+        set helmet of loop-entity to observer
+        set chestplate of loop-entity to iron chestplate
+        set leggings of loop-entity to iron leggings
+        set boots of loop-entity to iron boots
+        set loop-entity's tool to iron pickaxe
+        set name of loop-entity to "採掘者"
+        set {facing.%loop-entity's UUID%} to event-block's facing
+        set block at event-block to chest
+
+        set {itemblock.%loop-entity%} to event-block
+        
+        set {c.%loop-entity%} to 0
+
+        play sound "block.anvil.use" with volume 1 to all players
+        stop
+
+On right click:
+    target is armor stand
+    name of target is "採掘者"
+    cancel event
+    if player's tool is apple:
+        add 16 to {c.%target%}
+        remove 1 of apple from player's inventory
+        play sound "ui.button.click" with volume 1 to all players
+
+every 10 ticks:
+    loop all entities:
+        loop-entity is armor stand
+        name of loop-entity is "採掘者"
+        {c.%loop-entity%} >= 1
+        remove 1 from {c.%loop-entity%}
+        if {c.%loop-entity%} is 0:
+            play sound "block.fire.extinguish" with volume 1 to all players
+            send "§c食料がなくなった" to all players
+        set {_facing} to {facing.%loop-entity's UUID%}
+
+        set {_x} to loop-entity's x-coordinate
+        set {_y} to loop-entity's y-coordinate
+        set {_z} to loop-entity's z-coordinate
+
+        set {_yaw} to loop-entity's yaw
+
+        if {_facing} is west:
+            remove 1 from {_x}
+        else if {_facing} is north:
+            remove 1 from {_z}
+        else if {_facing} is east:
+            add 1 to {_x}
+        else if {_facing} is south:
+            add 1 to {_z}
+        else if {_facing} is up:
+            add 1 to {_y}
+        else if {_facing} is down:
+            remove 1 from {_y}
+        
+        if block at location at {_x} , {_y} , {_z} of world loop-entity's world is not air:
+            add block at location at {_x} , {_y} , {_z} of world loop-entity's world to {itemblock.%loop-entity%}'s inventory
+            set block at location at {_x} , {_y} , {_z} of world loop-entity's world to air
+            play sound "BLOCK_NOTE_BLOCK_BELL" with volume 1 to all players
+        
+        if block at location at {_x} , {_y} + 1 , {_z} of world loop-entity's world is not air:
+            add block at location at {_x} , {_y} + 1 , {_z} of world loop-entity's world to {itemblock.%loop-entity%}'s inventory
+            set block at location at {_x} , {_y} + 1 , {_z} of world loop-entity's world to air
+
+        execute console command "/execute as %loop-entity's UUID% at @s run tp @s ^ ^ ^1 "

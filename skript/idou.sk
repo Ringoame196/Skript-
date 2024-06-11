@@ -1,0 +1,61 @@
+On Dispense:
+    event-item is magenta glazed terracotta
+    cancel event
+    set {_facing} to event-block's facing
+    set {_x} to event-block's x-coordinate
+    set {_y} to event-block's y-coordinate
+    set {_z} to event-block's z-coordinate
+    loop 30 times:
+        play sound "block.piston.extend" with volume 0.5 to all players
+        if {_facing} is west:
+            remove 1 from {_x}
+        else if {_facing} is north:
+            remove 1 from {_z}
+        else if {_facing} is east:
+            add 1 to {_x}
+        else if {_facing} is south:
+            add 1 to {_z}
+        else if {_facing} is up:
+            add 1 to {_y}
+        else if {_facing} is down:
+            remove 1 from {_y}
+        set block at location at {_x}, {_y}, {_z} to magenta glazed terracotta
+        set block at location at {_x}, {_y}, {_z}'s facing to {_facing}
+        wait 3 ticks
+
+On right click:
+    event-block is magenta glazed terracotta
+    cancel event
+    set {_facing} to event-block's facing
+    set {_x} to event-block's x-coordinate
+    set {_y} to event-block's y-coordinate
+    set {_z} to event-block's z-coordinate
+    set {_name} to "%player%のリフト"
+    spawn a armor stand at location at {_x}, {_y} - 3.5, {_z}:
+        set name of the armor stand to "%{_name}%"
+        set helmet of the armor stand to leather helmet
+    loop all entities:
+        name of loop-entity is "%{_name}%"
+        make player ride loop-entity
+        execute console command "/data merge entity %loop-entity's UUID% {Invisible:true}"
+        loop 30 times:
+            play sound "entity.arrow.hit_player" with volume 0.5 to all players
+            if {_facing} is west:
+                remove 1 from {_x}
+            else if {_facing} is north:
+                remove 1 from {_z}
+            else if {_facing} is east:
+                add 1 to {_x}
+            else if {_facing} is south:
+                add 1 to {_z}
+            else if {_facing} is up:
+                add 1 to {_y}
+            else if {_facing} is down:
+                remove 1 from {_y}
+            execute console command "/tp %loop-entity's UUID% %{_x}% %{_y} - 3.5% %{_z}%"
+            if block at location at {_x}, {_y} , {_z} is air:
+                kill loop-entity 
+                stop
+            wait 3 ticks
+        kill loop-entity 
+        stop

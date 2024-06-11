@@ -1,0 +1,60 @@
+On right click:
+    event-item is clock
+    set {_name} to name of event-item
+
+    if {_name} is "録画":
+        play sound "BLOCK_NOTE_BLOCK_BELL" with volume 1 to player
+        set {replay.%player%} to 0
+        send "§a録画開始"
+        set player's tool to clock named "停止"
+        delete {replay.%player%.l::*}
+        delete {replay.%player%.i::*}
+    else if {_name} is "停止":
+        play sound "block.anvil.use" with volume 1 to player
+        delete {replay.%player%}
+        send "§c録画終了"
+        set player's tool to clock named "録画"
+    else if {_name} is "削除":
+        play sound "minecraft:entity.generic.explode" with volume 1 to player
+        delete {replay.%player%.l::*}
+        delete {replay.%player%.i::*}
+        send "§c録画を削除しました"
+    else if {_name} is "再生":
+        if {replay.%player%.l::*} is not set:
+            send "§c録画データありません"
+            stop
+        
+        set {_s} to size of {replay.%player%.l::*}
+        send "§3録画時間:%{_s}/5%秒"
+        play sound "BLOCK_NOTE_BLOCK_BELL" with volume 1 to player
+
+        set {_name} to "%player%のリプレイ"
+        spawn a husk at location at {replay.%player%.l::1}:
+            set name of the husk to "%{_name}%"
+            set husk's tool to {replay.%player%.i::1}
+            set helmet of husk to player head
+        loop all entities in radius 3 around location of {replay.%player%.l::1}:
+            name of loop-entity is "%{_name}%"
+            set {_mob} to loop-entity
+        execute console command "/data merge entity %{_mob}'s UUID% {NoAI:true}"
+
+        set {_i} to 2
+        loop {_s} times:
+            teleport {_mob} to {replay.%player%.l::%{_i}%}
+            set {_mob}'s tool to {replay.%player%.i::%{_i}%}
+            add 1 to {_i}
+            wait 5 ticks
+        wait 20 ticks
+        send "§c録画終了"
+        play sound "block.anvil.use" with volume 1 to player
+        kill {_mob}
+ 
+every 5 ticks:
+    loop all players:
+        {replay.%loop-player%} is set
+        add location of loop-player to {replay.%loop-player%.l::*}
+        add loop-player's tool to {replay.%loop-player%.i::*}
+        add 1 to {replay.%loop-player%}
+        {replay.%loop-player%} is 240
+        delete {replay.%loop-player%}
+        send "§c録画が終了されました" to loop-player

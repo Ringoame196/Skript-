@@ -1,0 +1,109 @@
+On Place:
+    event-block is lectern
+    player's tool is lectern named "ビーム"
+    cancel event
+    set {_facing} to event-block's facing
+
+    set {_x} to event-block's x-coordinate
+    set {_y} to event-block's y-coordinate + 5
+    set {_z} to event-block's z-coordinate
+
+    send "§aチャージ中…"
+
+    set {_block::*} to iron block , diamond block , emerald block , gold block , redstone block
+    set {_i} to 0
+    loop blocks in radius 5 around block at location at {_x} , {_y} , {_z}:
+        add 1 to {_i}
+        if {_i} is 5:
+            set {_i} to 1
+        if {_facing} is south:
+            loop-block's z-coordinate is {_z}
+            set block at loop-block to {_block::%{_i}%}
+            play sound "entity.experience_orb.pickup" with volume 1 to player
+            wait 1 ticks
+        else if {_facing} is east:
+            loop-block's x-coordinate is {_x}
+            set block at loop-block to {_block::%{_i}%}
+            play sound "entity.experience_orb.pickup" with volume 1 to player
+            wait 1 ticks
+        else if {_facing} is north:
+            loop-block's z-coordinate is {_z}
+            set block at loop-block to {_block::%{_i}%}
+            play sound "entity.experience_orb.pickup" with volume 1 to player
+            wait 1 ticks
+        else if {_facing} is west:
+            loop-block's x-coordinate is {_x}
+            set block at loop-block to {_block::%{_i}%}
+            play sound "entity.experience_orb.pickup" with volume 1 to player
+            wait 1 ticks
+    
+    wait 5 ticks
+    set {_x} to event-block's x-coordinate
+    set {_y} to event-block's y-coordinate + 5
+    set {_z} to event-block's z-coordinate
+
+    set {_block} to obsidian
+    loop blocks in radius 5 around block at location at {_x} , {_y} , {_z}:
+        if {_facing} is south:
+            loop-block's z-coordinate is {_z}
+            set block at loop-block to {_block}
+        else if {_facing} is east:
+            loop-block's x-coordinate is {_x}
+            set block at loop-block to {_block}
+        else if {_facing} is north:
+            loop-block's z-coordinate is {_z}
+            set block at loop-block to {_block}
+        else if {_facing} is west:
+            loop-block's x-coordinate is {_x}
+            set block at loop-block to {_block}
+    
+    play sound "entity.player.levelup" with volume 1 to player
+    send "§6チャージ完了"
+    wait 20 ticks
+    play sound "block.anvil.use" with volume 1 to player
+    wait 30 ticks
+    send "§c発射ー！"
+    set {_x} to event-block's x-coordinate
+    set {_y} to event-block's y-coordinate + 5
+    set {_z} to event-block's z-coordinate
+
+    loop 50 times:
+        if {_facing} is west:
+            add 1 to {_x}
+        else if {_facing} is south:
+            remove 1 from {_z}
+        else if {_facing} is east:
+            remove 1 from {_x}
+        else if {_facing} is north:
+            add 1 to {_z}
+        if block at location at {_x}, {_y}, {_z} is not air:
+            stop loop
+        create an explosion of force 3 at the block at location at {_x} , {_y} , {_z}
+        wait 1 ticks
+    
+    wait 50 ticks
+
+    set {_block} to air
+
+    set {_x} to event-block's x-coordinate
+    set {_y} to event-block's y-coordinate + 5
+    set {_z} to event-block's z-coordinate
+
+    play sound "block.anvil.land" with volume 1 to player
+    loop blocks in radius 5 around block at location at {_x} , {_y} , {_z}:
+        if {_facing} is south:
+            loop-block's z-coordinate is {_z}
+            set block at loop-block to {_block}
+            show heart at the loop-block to the player
+        else if {_facing} is east:
+            loop-block's x-coordinate is {_x}
+            set block at loop-block to {_block}
+            show heart at the loop-block to the player
+        else if {_facing} is north:
+            loop-block's z-coordinate is {_z}
+            set block at loop-block to {_block}
+            show heart at the loop-block to the player
+        else if {_facing} is west:
+            loop-block's x-coordinate is {_x}
+            set block at loop-block to {_block}
+            show heart at the loop-block to the player

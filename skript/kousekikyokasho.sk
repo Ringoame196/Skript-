@@ -1,0 +1,56 @@
+On right click:
+    event-block is dispenser
+    name of event-block is "鉱石管理委員会"
+    cancel event
+    open chest inventory with 1 row named "&a取引画面" to player
+    set slot 1 of player's current inventory to coal ore named "石炭採掘許可書" with lore "§a1エメラルド"
+    set slot 3 of player's current inventory to iron ore named "鉄採掘許可書" with lore "§a5エメラルド"
+    set slot 5 of player's current inventory to gold ore named "金採掘許可書" with lore "§a8エメラルド"
+    set slot 7 of player's current inventory to diamond ore named "ダイヤモンド採掘許可書" with lore "§a15エメラルド"
+
+On inventory click:
+    name of clicked inventory is "§a取引画面"
+    cancel event
+    play sound "block.dispenser.dispense" with volume 1 to player
+    if event-slot is coal ore named "石炭採掘許可書":
+        remove 1 of emerald from player's inventory
+        add paper named "石炭採掘許可書" to player's inventory
+    else if event-slot is iron ore named "鉄採掘許可書":
+        remove 5 of emerald from player's inventory
+        add paper named "鉄採掘許可書" to player's inventory
+    else if event-slot is gold ore named "金採掘許可書":
+        remove 8 of emerald from player's inventory
+        add paper named "金採掘許可書" to player's inventory
+    else if event-slot is diamond ore named "ダイヤモンド採掘許可書":
+        remove 15 of emerald from player's inventory
+        add paper named "ダイヤモンド採掘許可書" to player's inventory
+
+On Block Damage:
+    if event-block is coal ore:
+        if player has paper named "石炭採掘許可書":
+            remove paper named "石炭採掘許可書" from player's inventory
+        else:
+            cancel event
+            send "§c採掘許可されていません"
+            play sound "block.bell.use" with volume 1 to player
+    else if event-block is iron ore:
+        if player has paper named "鉄採掘許可書":
+            remove paper named "鉄採掘許可書" from player's inventory
+        else:
+            cancel event
+            send "§c採掘許可されていません"
+            play sound "block.bell.use" with volume 1 to player
+    else if event-block is gold ore:
+        if player has paper named "金採掘許可書":
+            remove paper named "金採掘許可書" from player's inventory
+        else:
+            cancel event
+            send "§c採掘許可されていません"
+            play sound "block.bell.use" with volume 1 to player
+    else if event-block is diamond ore:
+        if player has paper named "ダイヤモンド採掘許可書":
+            remove paper named "ダイヤモンド採掘許可書" from player's inventory
+        else:
+            cancel event
+            send "§c採掘許可されていません"
+            play sound "block.bell.use" with volume 1 to player

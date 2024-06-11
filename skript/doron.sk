@@ -1,0 +1,74 @@
+On Drop:
+    event-item is ender eye
+    name of event-item is "ドローン"
+    cancel event
+    wait 1 ticks
+    send "§6ドローンを設置しました"
+    play sound "block.anvil.use" with volume 1 to player
+    spawn a bat at the player:
+        set name of the bat to "ドローン"
+        set AI of the bat to off
+        set player's tool to air
+
+On damage:
+    victim is bat
+    name of victim is "ドローン"
+    if attacker's tool is iron ingot named "リモコン":
+        set {doron.%attacker%} to victim
+        send "§aドローンの操縦中" to attacker
+        play sound "BLOCK_NOTE_BLOCK_BELL" with volume 1 to attacker
+        set {_name} to "%attacker%"
+        spawn a villager at the attacker:
+            set name of the villager to "%{_name}%"
+            set AI of the villager to off
+        set {l.%attacker%} to "%attacker's x-coordinate% %attacker's y-coordinate% %attacker's z-coordinate%"
+
+        set {_i} to 0
+        loop 9 times:
+            set {invetory.%attacker%::%{_i}%} to slot {_i} of attacker's inventory
+            set slot {_i} of attacker's inventory to air
+            add 1 to {_i}
+        
+        set attacker's gamemode to adventure
+        teleport attacker to victim
+        make victim ride attacker
+        set attacker's flight mode to true
+        set slot 0 of attacker's inventory to gold ingot named "降りる"
+        set slot 1 of attacker's inventory to arrow named "攻撃"
+
+every seconds:
+    loop all players:
+        if {doron.%loop-player%} is set:
+            apply invisibility 1 to the loop-player for 2 second
+
+On right click:
+    event-item is gold ingot named "降りる"
+    play sound "entity.generic.explode" with volume 1 to player
+    execute console command "/effect clear %player%"
+    kill {doron.%player%}
+    execute console command "/tp %player% %{l.%player%}%"
+    delete {doron.%player%}
+    delete {l.%player%}
+    set player's gamemode to creative
+    
+    set {_i} to 0
+    send "§cドローン操作停止"
+    loop 9 times:
+        set slot {_i} of player's inventory to {invetory.%player%::%{_i}%}
+        add 1 to {_i}
+    delete {invetory.%player%::*}
+    loop all entities:
+        loop-entity is not player
+        set {_name} to name of loop-entity
+        if {_name} is name of player:
+            kill loop-entity
+            stop
+
+On right click:
+    event-item is arrow named "攻撃"
+    shoot an arrow
+    play sound "entity.arrow.shoot" with volume 1 to player
+
+On damage:
+    victim is bat
+    cancel event

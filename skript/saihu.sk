@@ -1,0 +1,43 @@
+On Script Load:
+    set {item::*} to GOLD NUGGET named "10円" , IRON NUGGET named "1円" , IRON INGOT named "100円" , PAPER named "1000円"
+
+On right click:
+    event-item is SHULKER SHELL named "財布"
+    open chest inventory with 2 row named "&3財布" to player
+    set {_i} to 0
+    set {saihu.open.%player%} to "open"
+    play sound "BLOCK_CHEST_OPEN" with volume 1 to player
+    loop 18 times:
+        set slot {_i} of player's current inventory to {saihu.%player%::%{_i}%}
+        add 1 to {_i}
+
+On inventory close:
+    {saihu.open.%player%} is set
+    play sound "BLOCK_CHEST_CLOSE" with volume 1 to player
+
+    set {_i} to 0
+    loop 18 times:
+        if {item::*} contains 1 of slot {_i} of player's current inventory:
+            set {saihu.%player%::%{_i}%} to slot {_i} of player's current inventory
+        else:
+            set {saihu.%player%::%{_i}%} to air
+            slot {_i} of player's current inventory is not air
+            add slot {_i} of player's current inventory to player's inventory
+            send "§cお金以外のものを入れることはできません"
+        add 1 to {_i}
+    
+    set {_c} to 0
+    loop all items of player's current inventory:
+        if loop-item is IRON NUGGET named "1円":
+            add 1 to {_c}
+        else if loop-item is GOLD NUGGET named "10円":
+            add 10 to {_c}
+        else if loop-item  is IRON INGOT named "100円":
+            add 100 to {_c}
+        else if loop-item is PAPER named "1000円":
+            add 1000 to {_c}
+    
+    set player's tool to SHULKER SHELL named "財布" with lore "入っているお金:%{_c}%円"
+    send "§a財布にあるお金:%{_c}%円"
+
+    delete {saihu.open.%player%}

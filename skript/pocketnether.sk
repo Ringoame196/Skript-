@@ -1,0 +1,17 @@
+on right click:
+    event-item is ender pearl named "ポケットネザー"
+    event-block is obsidian
+    block under the event-block is observer
+    cancel event
+    
+    if player's world is world:
+        set {pocket.sp.%player%} to location of player
+        send "§3ネザーに移動した"
+        execute console command "/execute as %player% at @s in minecraft:the_nether run tp @s ~ ~ ~"
+
+on death:
+    {pocket.sp.%victim%} is set
+    cancel event
+    send "§c[危機一髪] タヒに戻った" to victim
+    teleport victim to {pocket.sp.%victim%}
+    delete {pocket.sp.%victim%}

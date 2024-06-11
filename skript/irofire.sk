@@ -1,0 +1,23 @@
+On right click:
+    event-block is campfire
+    event-item is iron ore
+    cancel event
+    set {_x} to event-block's x-coordinate
+    set {_y} to event-block's y-coordinate - 0.8
+    set {_z} to event-block's z-coordinate
+
+    execute console command "/execute as %player% at @s run summon armor_stand %{_x}% %{_y}% %{_z}% {Tags:[takibi],Invisible:true,CustomNameVisible:true}"
+    
+    loop entities in radius 1 around event-block:
+        loop-entity is armor stand
+        loop-entity has scoreboard tag "takibi"
+        set loop-entity's tool to iron ore
+        remove 1 of iron ore from player's tool
+        set name of the loop-entity to "§6しばらくお待ち下さい…"
+        wait 100 ticks
+        kill loop-entity
+        add 3 to {_y}
+        set block over the event-block to chest
+        set slot 0 of block over the event-block to iron ingot
+        delete block over the event-block
+        stop

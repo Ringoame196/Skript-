@@ -1,0 +1,21 @@
+On break:
+    event-block is stone
+    play sound "entity.arrow.hit_player" with volume 1 to player
+    set {_r} to random integer from 1 to 5
+    {_r} is 1
+    send "§a石の塊をゲットしました"
+    add stone of efficiency 5 named "石の塊" to player
+    play sound "ui.toast.challenge_complete" with volume 1 to player
+
+On inventory click:
+    name of clicked inventory is "Repair & Disenchant"
+    event-item is stone named "石の塊"
+    event-slot is 2
+    cancel event
+    set slot 0 of clicked inventory to air
+    set slot 1 of clicked inventory to air
+    set slot 2 of clicked inventory to air
+    set {_itemlist::*} to iron ingot, diamond, gold ingot, coal, emerald
+    set {_r} to random integer from 1 to 5
+    add {_itemlist::%{_r}%} to player's inventory
+    play sound "block.grindstone.use" with volume 1 to player

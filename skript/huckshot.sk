@@ -1,0 +1,31 @@
+On Projectile Hit:
+    shooter is player
+    projectile is fish hook
+    event-block is set
+    block under the event-block is not air
+    play sound "block.anvil.place" with volume 1 to shooter
+    set {huck.%shooter%} to "use"
+    set {huck.x.%shooter%} to projectile's x-coordinate
+    set {huck.y.%shooter%} to projectile's y-coordinate
+    set {huck.z.%shooter%} to projectile's z-coordinate
+
+On Fishing:
+    {huck.%player%} is set
+    delete {huck.%player%}
+
+    set {_gm} to player's gamemode
+    set player's gamemode to spectator
+    loop 100 times:
+        if {huck.x.%player%} - player's x-coordinate <= 1:
+            if {huck.y.%player%} - player's y-coordinate <= 1:
+                if {huck.z.%player%} - player's z-coordinate <= 1:
+                    set player's gamemode to {_gm}
+                    apply slow falling 255 to player for 3 seconds
+                    execute console command "/execute as %player% at @s run tp @s ~ ~1 ~"
+                    stop
+        execute console command "/execute as %player% at @s run tp @s ^ ^ ^0.5 facing %{huck.x.%player%}% %{huck.y.%player%}% %{huck.z.%player%}%"
+        wait 1 ticks
+    
+On damage:
+    if victim is player:
+        cancel event

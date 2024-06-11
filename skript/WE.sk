@@ -1,0 +1,93 @@
+On break:
+    player's tool is golden axe named "WE"
+    cancel event
+    add 1 to {we.c.%player%}
+    if {we.c.%player%} is 1:
+        send "§6位置1を設定しました"
+        set {we.%player%.1} to location of event-block
+    else:
+        send "§6位置2を設定しました"
+        set {we.c.%player%} to 0
+        set {we.%player%.2} to location of event-block
+
+On right click:
+    player's tool is golden axe named "WE"
+    open chest inventory with 1 row named "§2WE画面" to player
+    set {_i} to 0
+    loop 9 times:
+        set slot {_i} of player's current inventory to barrier named "§c選択不可"
+        add 1 to {_i}
+    
+    set slot 5 of player's current inventory to command block named "§a実行"
+    set slot 2 of player's current inventory to air
+    set slot 4 of player's current inventory to redstone block named "§c停止"
+
+On inventory click:
+    name of clicked inventory is "&2WE画面"
+    if event-item is barrier block named "§c選択不可":
+        cancel event
+    else if event-item is command block named "§a実行":
+        cancel event   
+        set {_block} to slot 2 of player's current inventory's type
+        send "§aWE開始"
+        close player's inventory
+
+        if {we.%player%} is set:
+            send "§c同時に実行することはできません"
+            stop 
+        set {we.%player%} to "do"
+        set {_x1} to {we.%player%.1}'s x-coordinate
+        set {_y1} to {we.%player%.1}'s y-coordinate
+        set {_z1} to {we.%player%.1}'s z-coordinate
+
+        set {_x2} to {we.%player%.2}'s x-coordinate
+        set {_y2} to {we.%player%.2}'s y-coordinate
+        set {_z2} to {we.%player%.2}'s z-coordinate
+
+        if {_x1} >= {_x2}:
+            set {_x} to {_x2}
+            set {_max.x} to {_x1}
+        else:
+            set {_x} to {_x1}
+            set {_max.x} to {_x2}
+        set {_mx} to {_max.x} - {_x} + 1
+
+        if {_y1} >= {_y2}:
+            set {_y} to {_y2}
+            set {_max.y} to {_y1}
+        else:
+            set {_y} to {_xy}
+            set {_max.y} to {_xy}
+        set {_my} to {_max.y} - {_y} + 1
+
+        if {_z1} >= {_z2}:
+            set {_z} to {_z2}
+            set {_max.z} to {_z1}
+        else:
+            set {_z} to {_z1}
+            set {_max.z} to {_z2}
+        set {_mz} to {_max.z} - {_z} + 1
+
+        set {_iy} to {_y}
+        loop {_my} times:
+            set {_ix} to {_x}
+            loop {_mx} times:
+                set {_iz} to {_z}
+                loop {_mz} times:
+                    {we.%player%} is set
+                    set block at location at {_ix}, {_iy} , {_iz} to {_block}
+                    play sound "block.dispenser.dispense" with volume 1 to player
+                    wait 1 ticks
+                    add 1 to {_iz}
+                add 1 to {_ix}
+            add 1 to {_iy}
+
+        send "§6終了"
+        play sound "block.anvil.use" with volume 1 to player
+        delete {we.%player%}
+
+    else if event-item is redstone block named "§c停止":
+        cancel event
+        delete {we.%player%}
+        send "§c停止しました"
+        close player's inventory

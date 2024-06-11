@@ -1,0 +1,65 @@
+On Sneak Toggle:
+    player is sneaking
+    loop blocks in radius 3 around player:
+        loop-block is dropper
+        set {selectblock.%player%} to loop-block
+    
+        set {_i} to 0
+        send "§a---近くのあるアイテム---"
+        set {_name} to name of slot 0 of {selectblock.%player%}'s inventory
+        send "<run command:/t 0> §6%{_name}%"
+
+        set {_name} to name of slot 1 of {selectblock.%player%}'s inventory
+        send "<run command:/t 1> §6%{_name}%"
+
+        set {_name} to name of slot 2 of {selectblock.%player%}'s inventory
+        send "<run command:/t 2> §6%{_name}%"
+
+        set {_name} to name of slot 3 of {selectblock.%player%}'s inventory
+        send "<run command:/t 3> §6%{_name}%"
+
+        set {_name} to name of slot 4 of {selectblock.%player%}'s inventory
+        send "<run command:/t 4> §6%{_name}%"
+
+        set {_name} to name of slot 5 of {selectblock.%player%}'s inventory
+        send "<run command:/t 5> §6%{_name}%"
+
+        set {_name} to name of slot 6 of {selectblock.%player%}'s inventory
+        send "<run command:/t 6> §6%{_name}%"
+
+        set {_name} to name of slot 6 of {selectblock.%player%}'s inventory
+        send "<run command:/t 6> §6%{_name}%"
+
+        set {_name} to name of slot 7 of {selectblock.%player%}'s inventory
+        send "<run command:/t 7> §6%{_name}%"
+
+        set {_name} to name of slot 8 of {selectblock.%player%}'s inventory
+        send "<run command:/t 8> §6%{_name}%"
+
+command /t <int>:
+    trigger:
+        play sound "block.note_block.pling" with volume 1 to player
+        add slot arg of {selectblock.%player%}'s inventory to player's inventory
+        set slot arg of {selectblock.%player%}'s inventory to air
+
+On death:
+    victim is player
+    set block at location at victim to dropper
+    set block at location at victim's name to "§4%victim%のデスボックス"
+    set block at location at victim's facing to up
+    set {_i} to 0
+    loop 9 times:
+        add slot {_i} of victim's inventory to block at location at victim's inventory
+        add 1 to {_i}
+
+every ticks:
+    loop all players:
+        wipe loop-player sidebar
+        set name of sidebar of loop-player to "§aRingoame196 FPS"
+        set score "§cMCID:%loop-player%" in sidebar of loop-player to -1
+        set score "PING:%loop-player's ping%MS" in sidebar of loop-player to -2
+        set score "-----------------" in sidebar of loop-player to -3
+        set score "§6YAW:%loop-player's yaw%" in sidebar of loop-player to -4
+        set score "§3X:%loop-player's x-coordinate%" in sidebar of loop-player to -5
+        set score "§4Y:%loop-player's y-coordinate%" in sidebar of loop-player to -6
+        set score "§5Z:%loop-player's z-coordinate%" in sidebar of loop-player to -7

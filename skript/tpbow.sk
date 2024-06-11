@@ -1,0 +1,10 @@
+On Projectile Hit:
+    shooter is player
+    shooter's off hand tool is tnt
+    projectile is arrow
+    remove 1 of tnt from shooter's off hand tool
+    create an explosion of force 6 at the projectile
+
+    loop blocks in radius 6 around projectile:
+        if block under the loop-block is not air:
+            set block at loop-block to fire

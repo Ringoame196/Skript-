@@ -1,0 +1,45 @@
+On right click:
+    event-item is stick named "持ち物検査設定"
+    event-block is observer
+    if event-block's facing is not up:
+        set event-block's facing to up
+    if {motimonokensa.%location of event-block%} is not set:
+        send "§6ゲート設定を完了しました"
+        play sound "block.anvil.use" with volume 1 to player
+        set {motimonokensa.%location of event-block%} to "true"
+    else:
+        open chest inventory with 2 row named "&3持ち物検査設定" to player
+        set {_i} to 0
+        set {motimonokensa.open.%player%} to location of event-block
+        loop 18 times:
+            set slot {_i} of player's current inventory to {motimonokensa.inv.%location of event-block%::%{_i} + 1%}
+            add 1 to {_i}
+
+On inventory close:
+    {motimonokensa.open.%player%} is set
+    set {_i} to 0
+    send "§3危険物設定一覧"
+    loop 18 times:
+        set {motimonokensa.inv.%{motimonokensa.open.%player%}%::%{_i} + 1%} to slot {_i} of player's current inventory
+        if {motimonokensa.inv.%{motimonokensa.open.%player%}%::%{_i} + 1%} is not air:
+            send "%{motimonokensa.inv.%{motimonokensa.open.%player%}%::%{_i} + 1%}%"
+        add 1 to {_i}
+    delete {motimonokensa.open.%player%}
+
+On player move:
+    block under the player is observer
+    {motimonokensa.%location of block under the player%} is set
+    set {_i} to 1
+    loop 18 times:
+        set {_item} to {motimonokensa.inv.%location of block under the player%::%{_i}%}
+        if player has {_item}:
+            send "§c[通知] %player%さんが持ち物検査ゲートで危険アイテムを感知しました" to all players
+            remove {_item} from player's inventory
+            kill player
+            stop
+        add 1 to {_i}
+
+On break:
+    {motimonokensa.%location of event-block%} is set
+    delete {motimonokensa.%location of event-block%}
+    send "§c持ち物検査削除しました"

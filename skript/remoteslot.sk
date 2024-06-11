@@ -1,0 +1,27 @@
+On right click:
+    player's tool is feather named "パラシュート"
+    cancel event
+    send "§aパラシュート展開！"
+    play sound "block.anvil.use" with volume 1 to player
+    shoot a chicken at speed 0.5
+    loop all entities in radius 1 around player:
+        loop-entity is chicken
+        make player ride loop-entity
+        set name of loop-entity to "パラシュート"
+        
+        stop
+
+every ticks:
+    loop all entities:
+        loop-entity is chicken
+        name of loop-entity is "パラシュート"
+        apply slow falling 0 to the loop-entity for 1 second
+        push the loop-entity infront at speed 0.005
+        play sound "entity.arrow.shoot" with volume 0.25 to all players
+        if block under the loop-entity is not air:
+            kill loop-entity
+        
+        loop all players in radius 2 around loop-entity:
+            stop
+        
+        kill loop-entity

@@ -1,0 +1,65 @@
+On Vehicle Enter:
+    loop entities in radius 3 around player:
+        loop-entity is minecart
+        set {vehicle.%player%} to "%loop-entity's UUID%"
+        set {_i} to 0
+        loop 9 times:
+            add slot {_i} of player's inventory to {inventory.%player%::*}
+            set slot {_i} of player's inventory to air
+            add 1 to {_i}
+        set slot 1 of player's inventory to emerald named "アクセル"
+        set slot 3 of player's inventory to redstone named "ブレーキ"
+        set slot 5 of player's inventory to gold ingot named "右"
+        set slot 7 of player's inventory to tnt named "クラクション"
+        stop
+
+On Vehicle Exit:
+    delete {vehicle.%player%}
+    delete {axel.%player%}
+    set {_i} to 0
+    loop 9 times:
+        set slot {_i} of player's inventory to air
+        set slot {_i} of player's inventory to {inventory.%player%::%{_i} + 1%}
+        add 1 to {_i}
+    delete {inventory.%player%::*}
+
+On right click:
+    {vehicle.%player%} is set
+    cancel event
+    if event-item is emerald named "アクセル":
+        set {axel.%player%} to {vehicle.%player%}
+    else if event-item is redstone named "ブレーキ":
+        delete {axel.%player%}
+        play sound "block.enchantment_table.use" with volume 1 to player
+    else if event-item is gold ingot:
+        set {_item} to name of event-item
+        if {_item} is "右":
+            execute console command "/execute as %{vehicle.%player%}% at @s run tp @s ~ ~ ~ ~10 ~"
+        else if {_item} is "左":
+            execute console command "/execute as %{vehicle.%player%}% at @s run tp @s ~ ~ ~ ~-10 ~"
+
+    else if event-item is tnt named "クラクション":
+        play sound "entity.generic.explode" with volume 1 to player
+        show huge explosion at the player to the player
+
+On Drop:
+    {vehicle.%player%} is set
+    cancel event
+    event-item is gold ingot
+    set {_name} to name of event-item
+    wait 1 ticks
+    if {_name} is "右":
+        set player's tool to gold ingot named "左"
+    else if {_name} is "左":
+        set player's tool to gold ingot named "右"
+
+every ticks:
+    loop all players:
+        {axel.%loop-player%} is set
+        execute console command "/execute as %{axel.%loop-player%}% at @s if block ^-0.5 ^ ^ air unless block ^-1 ^-1 ^ air run tp @s ^-0.2 ^ ^"
+        play sound "entity.horse.land" with volume 0.3 to loop-player
+
+On Place:
+    event-block is iron block
+    spawn minecart at the event-block
+    set block at event-block to air

@@ -1,0 +1,52 @@
+command /g:
+    trigger:
+        add lime glazed terracotta of unbreaking 1 named "一括ブロック設置" to player's inventory
+
+On Place:
+    event-block is lime glazed terracotta
+    cancel event
+    set {_facing} to event-block's facing
+    
+    set {_x} to event-block's x-coordinate
+    set {_y} to event-block's y-coordinate - 1
+    set {_z} to event-block's z-coordinate
+
+    set {_x2} to {_x}
+    set {_z2} to {_z}
+
+    send "§a[方向]%{_facing}%" to player
+
+    loop 15 times:
+        if {_facing} is west:
+            add 1 to {_x}
+        else if {_facing} is south:
+            remove 1 from {_z}
+        else if {_facing} is east:
+            remove 1 from {_x}
+        else if {_facing} is north:
+            add 1 to {_z}
+        if block at location at {_x}, {_y}, {_z} is not air:
+            stop loop
+        set block at location at {_x}, {_y}, {_z} to glass
+        show mob spawner flames at location at {_x}, {_y}, {_z} to player
+        play sound "block.note_block.xylophone" with volume 1 to player
+        wait 3 ticks
+    wait 60 ticks
+
+    loop 15 times:
+        if {_facing} is west:
+            add 1 to {_x2}
+        else if {_facing} is south:
+            remove 1 from {_z2}
+        else if {_facing} is east:
+            remove 1 from {_x2}
+        else if {_facing} is north:
+            add 1 to {_z2}
+        if block at location at {_x}, {_y}, {_z} is glass:
+        else if block at location at {_x}, {_y}, {_z} is air:
+        else:
+            stop loop
+        delete block at location at {_x2}, {_y}, {_z2}
+        play sound "block.glass.break" with volume 1 to player
+        show barrier at location at {_x2}, {_y}, {_z2} to player
+        wait 3 ticks

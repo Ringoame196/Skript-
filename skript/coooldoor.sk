@@ -1,0 +1,51 @@
+On right click:
+    event-block is observer
+    block under the event-block is obsidian
+
+    if event-item is gold ingot:
+        if {lock.%location of event-block%} is set:
+            delete {lock.%location of event-block%}
+            send "§aロック解除しました"
+            play sound "block.chest.open" with volume 1 to player
+        else:
+            set {lock.%location of event-block%} to "lock"
+            send "§cロックをかけました"
+            play sound "block.fence_gate.open" with volume 1 to player
+        stop
+    if {lock.%location of event-block%} is set:
+        send "§cロックがかかっています"
+        play sound "block.chest.locked" with volume 1 to player
+        stop
+    delete {_blocks::*}
+    set {_facing} to event-block's facing
+    set block at event-block to redstone lamp
+    loop blocks in radius 2 around event-block:
+        if loop-block is obsidian:
+            play sound "block.anvil.place" with volume 1 to player
+            add location of loop-block to {_blocks::*}
+            set block at loop-block to glass
+            wait 10 ticks
+    set {_s} to size of {_blocks::*}
+    wait 5 ticks
+    play sound "block.glass.break" with volume 1 to player
+    set block at event-block to air
+    set {_i} to 1
+    loop {_s} times:
+        delete block at {_blocks::%{_i}%}
+        show flame at the block at {_blocks::%{_i}%} to the player
+        add 1 to {_i}
+    wait 50 ticks
+    set {_i} to 1
+    loop {_s} times:
+        show barrier at the block at {_blocks::%{_i}%} to the player
+        add 1 to {_i}
+    wait 10 ticks
+    set {_i} to 1
+    loop {_s} times:
+        play sound "block.anvil.place" with volume 1 to player
+        set block at {_blocks::%{_i}%} to obsidian
+        add 1 to {_i}
+        wait 10 ticks
+    set block at event-block to observer
+    set block at event-block's facing to {_facing}
+    play sound "block.anvil.use" with volume 1 to player

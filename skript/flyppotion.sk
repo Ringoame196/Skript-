@@ -1,0 +1,19 @@
+On Consume:
+    event-item is potion named "フライポーション"
+    send "%player%は §9[空を飛ぶ力]§f を手に入れた"
+    play sound "ui.toast.challenge_complete" with volume 1 to player
+    set player's flight mode to true
+    set {time.%player%} to 15
+    loop 15 times:
+        if {time.%player%} <= 0:
+            stop
+        execute console command "/title %player% actionbar %{time.%player%}%"
+        remove 1 from {time.%player%}
+        wait 1 seconds
+    set player's flight mode to false
+
+On Consume:
+    event-item is milk bucket
+    if {time.%player%} >= 1:
+        set {time.%player%} to -1
+        set player's flight mode to false

@@ -1,0 +1,77 @@
+On right click:
+    if event-item is red dye named "変身":
+        play sound "item.chorus_fruit.teleport" with volume 1 to player
+        if {henshin.%player%} is not set:
+            set {henshin.%player%} to "henshin"
+            apply invisibility 1 to the player for 9999 second
+            set player's flight mode to true
+            set {_name} to "%player%"
+            spawn a bat at the player:
+                set name of the bat to "%{_name}%"
+            wait 1 ticks
+            loop all entities:
+                loop-entity is not player
+                name of loop-entity is "%{_name}%"
+                make loop-entity ride player
+
+                set player's tool to air
+                wait 1 ticks
+                set player's tool to red dye named "変身"
+                stop
+        else:
+            delete {henshin.%player%}
+            remove invisibility from player
+            if player's gamemode is not creative:
+                set player's flight mode to false
+            loop all entities:
+                loop-entity is not player
+                name of loop-entity is "%player%"
+                kill loop-entity
+
+                set player's tool to air
+                wait 1 ticks
+                set player's tool to red dye named "変身"
+
+                stop
+
+On damage:
+    attacker is player
+    {kyuuke.%attacker%} is set
+    if name of victim is not name of attacker:
+        send "%victim%を仲間にしました" to attacker
+        set helmet of victim to head of attacker named "attacker"
+        play sound "block.anvil.use" with volume 1 to attacker
+        set name of victim to "%attacker%"
+    else:
+        kill victim
+        apply instant health 3 to the attacker for 1 second
+
+command /k:
+    trigger:
+        set {kyuuke.%player%} to "set"
+
+On damage:
+    name of attacker is name of victim
+    cancel event
+
+every 1 seconds:
+    loop all players:
+        {kyuuke.%loop-player%} is set
+        helmet of loop-player is air
+        set block at location of loop-player to fire
+        wait 1 ticks
+        set block at location of loop-player to air
+
+On drink:
+    if event-item is potion named "血":
+        set {kyuuke.%player%} to "set"
+        send "§c吸血鬼になった…"
+        add red dye named "変身" to player's inventory
+        play sound "entity.generic.explode" with volume 1 to player
+        apply nausea 10 to the player for 10 second
+    else if event-item is milk bucket:
+        send "§a人間に戻った…"
+        delete {kyuuke.%player%}
+        remove red dye named "変身" from player's inventory
+        play sound "item.totem.use" with volume 0.5 to player
+        apply nausea 10 to the player for 10 second

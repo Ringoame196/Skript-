@@ -1,0 +1,46 @@
+On right click:
+    event-item is SHEARS named "爆弾処理"
+    target is tnt
+    loop entities in radius 1.5 around player:
+        loop-entity is target
+        set {target.%player%} to target
+        open chest inventory with 1 row named "&c爆弾処理" to player
+        set slot 4 of player's current inventory to tnt
+        set {color.%player%} to random integer from 0 to 1
+        stop
+    send "§cもっと近くじゃないと爆弾処理をすることができないようだ"
+
+on inventory click:
+    name of clicked inventory is "&c爆弾処理"
+    cancel event
+    play sound "BLOCK_NOTE_BLOCK_BELL" with volume 1 to player
+    if event-item is tnt:
+        open chest inventory with 5 row named "&c爆弾処理" to player
+
+        set {_i} to 9
+        loop 9 times:
+            set slot {_i} of player's current inventory to red wool named "§c赤のコード"
+            add 1 to {_i}
+        
+        set {_i} to 27
+        loop 9 times:
+            set slot {_i} of player's current inventory to blue wool named "§1青のコード"
+            add 1 to {_i}
+        stop
+    else if event-item is red wool named "§c赤のコード":
+        kill {target.%player%}
+        if {color.%player%} is 0:
+            send "§a爆弾処理成功"
+            play sound "entity.firework_rocket.twinkle_far" with volume 1 to player
+        else:
+            send "§c間違ったコードを切ってしまったようだ"
+            create an explosion of force 5 at the player
+    else if event-item is blue wool named "§1青のコード":
+        kill {target.%player%}
+        if {color.%player%} is 1:
+            send "§a爆弾処理成功"
+            play sound "entity.firework_rocket.twinkle_far" with volume 1 to player
+        else:
+            send "§c間違ったコードを切ってしまったようだ"
+            create an explosion of force 5 at the player
+    close player's inventory

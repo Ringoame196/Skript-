@@ -1,0 +1,36 @@
+On damage:
+    attacker's tool is gold sword
+    attacker's off hand tool is ice
+    cancel event
+    loop blocks in radius 2 around victim:
+        loop-block is air
+        set block at loop-block to ice
+    loop blocks in radius 1 around victim:
+        set block at loop-block to air
+    play sound "block.anvil.use" with volume 1 to attacker
+
+On block break:
+    event-block is ice
+    player's tool is gold axe named "ハンマー"
+    loop blocks in radius 3 around event-block:
+        loop-block is ice
+        set block at loop-block to air
+    play sound "block.glass.break" with volume 1 to player
+
+On right click:
+    player's tool is gold sword
+    player's off hand tool is ice
+    cancel event
+    execute console command "/execute as %player% at @s run summon minecraft:armor_stand ^ ^1 ^8 {Tags:[ice]}"
+
+every ticks:
+    loop all entities:
+        loop-entity is armor stand
+        loop-entity has scoreboard tag "ice"
+        set {_y} to block under the loop-entity's y-coordinate + 1
+        loop blocks in radius 5 around loop-entity:
+            set {_yy} to loop-block's y-coordinate
+            {_yy} is {_y}
+            set block at loop-block to ice
+        kill loop-entity
+        play sound "BLOCK_NOTE_BLOCK_BELL" with volume 1 to all players

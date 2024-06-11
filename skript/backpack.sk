@@ -1,0 +1,51 @@
+On rightclick:
+    if event-item is book named "テレポート":
+        open chest inventory with 2 row named "§1テレポート" to player
+        set {_i} to 0
+        loop 17 times:
+            if {tp.%player%::%{_i}%} is set:
+                set slot {_i} of player's current inventory to paper of unbreaking 1 named "§6%{_i}%" with lore "%{tptitle.%player%::%{_i}%}%"
+            else:
+                set slot {_i} of player's current inventory to paper named "§6%{_i}%" with lore "未設定"
+            add 1 to {_i}
+        set slot 17 of player's current inventory to redstone named "§c削除"
+
+On inventory click:
+    name of clicked inventory is "§1テレポート"
+    play sound "block.dispenser.fail" with volume 1 and pitch 1 at player
+    cancel event
+    if clicked slot is redstone:
+        set slot 17 of player's current inventory to redstone of unbreaking 5 named "§c削除"
+    else:
+        set {_i} to 0
+        loop 17 times:
+            if clicked slot is paper named "§6%{_i}%":
+                if {tp.%player%::%{_i}%} is set: 
+                    if slot 17 of player's current inventory is redstone of unbreaking 5 named "§c削除":
+                        delete {tp.%player%::%{_i}%}
+                        delete {tptitle.%player%::%{_i}%}
+                        send "§c%{_i}%番目のマップを削除しました"
+                        close player's inventory
+                    else:
+                        teleport player to {tp.%player%::%{_i}%}
+                        send "§3%{tptitle.%player%::%{_i}%}% にテレポートしました"
+                else:
+                    if slot 17 of player's current inventory is not redstone of unbreaking 1 named "§c削除":
+                        set {tp.%player%::%{_i}%} to location of player
+                        set {_x} to player's x-coordinate
+                        set {_y} to player's y-coordinate
+                        set {_z} to player's z-coordinate
+                        set {tptitle.%player%::%{_i}%} to "x:%{_x}% y:%{_y}% z:%{_z}%"
+
+                        send "§3%{_i}%番目のマップを登録しました"
+                    close player's inventory
+                stop
+            add 1 to {_i}
+
+command /tptitle <number> <text>:
+    trigger:
+        if {tptitle.%player%::%arg-1%} is set:
+            set {tptitle.%player%::%arg-1%} to arg-2
+            send "§6%arg-1%番目を%arg-2%に変更しました"
+        else:
+            send "§c%arg-1%番目は未設定です"

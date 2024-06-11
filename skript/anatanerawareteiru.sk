@@ -1,0 +1,11 @@
+On Target:
+    target is set
+    send "§c[匿名R] あなた%event-entity%に狙われているわよ！" to target
+    set {_h} to target's helmet
+    set target's helmet to carved pumpkin
+    apply glowing 1 to the event-entity for 10 second
+    loop 5 times:
+        play sound "BLOCK_NOTE_BLOCK_BELL" with volume 1 to target
+        wait 3 ticks
+        set target's helmet to air
+        wait 3 ticks

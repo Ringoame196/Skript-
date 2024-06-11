@@ -1,0 +1,26 @@
+On damage:
+    attacker is iron golem
+    set {_r} to random integer from 1 to 3
+
+    if {_r} is 1:
+        apply levitation 8 to victim for 1 seconds
+        wait 1 seconds
+        apply resistance 255 to attacker for 1 seconds
+        create an explosion of force 5 at the victim
+        send "§4空中爆破" to all players
+    else if {_r} is 2:
+        cancel event
+        send "§3ジャンプ" to all players
+        apply levitation 10 to attacker for 1 seconds
+        wait 1 seconds
+        set {_l} to location of attacker
+        teleport victim to location at {_l}
+    else if {_r} is 3:
+        cancel event
+        send "§5次元移動" to all players
+        set {_l} to location of victim
+        set block at location at {_l} to end portal
+        wait 1 seconds
+        set block at location at {_l} to air
+        teleport attacker to location at {_l}
+        

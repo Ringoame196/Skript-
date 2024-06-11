@@ -1,0 +1,47 @@
+On right click:
+    target entity is pig
+    open chest inventory with 2 row named "&3取引画面" to player
+    set slot 0 of player's current inventory to diamond
+    set slot 1 of player's current inventory to gold ingot
+    set slot 2 of player's current inventory to apple
+    set slot 3 of player's current inventory to tnt
+    set slot 4 of player's current inventory to cobblestone
+    set slot 5 of player's current inventory to oak planks
+    set slot 6 of player's current inventory to iron ingot
+    set slot 7 of player's current inventory to torch
+    set slot 8 of player's current inventory to barrier named "§c選択不可"
+
+    set {open.%player%} to "true"
+    set {_i} to 9
+    loop 8 times:
+        set slot {_i} of player's current inventory to emerald named "§a購入"
+        add 1 to {_i}
+
+on inventory click:
+    name of clicked inventory is "§3取引画面"
+    if event-item is air:
+        stop
+    else if event-item is carrot:
+        stop
+    else:
+        cancel event
+    if event-item is emerald named "§a購入":
+        set {_i} to 9
+        if slot 17 of player's current inventory is not carrot:
+            send "§c購入するには 人参をセットしてください"
+            close player's inventory
+            play sound "BLOCK_NOTE_BLOCK_BELL" with volume 1 to player
+            stop
+        loop 8 times:
+            if event-slot is {_i}:
+                set {_c} to {_i} - 9
+                add slot {_c} of player's current inventory to player's inventory
+                remove 1 of carrot from slot 17 of player's current inventory
+                play sound "block.dispenser.dispense" with volume 1 to player
+                stop
+            add 1 to {_i}
+
+On inventory close:
+    {open.%player%} is set
+    add slot 17 of player's current inventory to player's inventory
+    delete {open.%player%}

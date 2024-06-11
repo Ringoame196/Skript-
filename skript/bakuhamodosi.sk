@@ -1,0 +1,10 @@
+On break:
+    event-block is log
+    player's tool is golden axe
+    set {_block} to event-block
+    loop blocks in radius 5 around event-block:
+        if loop-block is log:
+            add loop-block to player's inventory
+            set block at location at loop-block to air
+            play sound "block.note_block.bell" with volume 1 to player
+            wait 10 ticks

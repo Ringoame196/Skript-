@@ -1,0 +1,15 @@
+On right click:
+    event-block is chest
+    event-item is golden hoe named "怪盗棒"
+    cancel event
+
+    set {_r} to random integer from 0 to 26
+    set {_item} to slot {_r} of event-block's inventory
+    if {_item} is not air:
+        add {_item} to player's inventory
+        send "§3%{_item}%を盗んだ"
+        set slot {_r} of event-block's inventory to paper named "アイテムはいただいた" with lore "怪盗%player%"
+        execute console command "/effect give %player% speed 3 2 true"
+        execute console command "/effect give %player% invisibility 3 3 true"
+    else:
+        send "§c盗みに失敗した"

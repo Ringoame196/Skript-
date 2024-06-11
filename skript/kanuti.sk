@@ -1,0 +1,20 @@
+On right click:
+    event-item is arrow named "銃"
+    shoot an snowball
+
+On damage:
+    name of victim is "缶"
+    cancel event
+    if damage cause is projectile:
+        set {_r} to random integer from 0.1 to 2
+        push the victim upwards at speed {_r}
+        add 1 to {c.%victim%}
+
+every ticks:
+    loop all entities:
+        name of loop-entity is "缶"
+        {c.%loop-entity%} > 2
+        block under the loop-entity is not air
+        kill loop-entity
+        send "§a[結果] %{c.%loop-entity%}%回" to all players
+        delete {c.%loop-entity%}

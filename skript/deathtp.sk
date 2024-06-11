@@ -1,0 +1,17 @@
+On Death:
+    if victim is player:
+        set {deathtp.%victim%} to location of victim
+        set {coordinate} to "x:%victim's x-coordinate% y:%victim's y-coordinate% z:%victim's z-coordinate%"
+        send "§6死亡座標%{coordinate}%" to victim
+        send "§6/deathtpで死亡地点にテレポート" to victim
+
+command /deathtp:
+    trigger:
+        if {deathtp.%player%} is set:
+            teleport player to {deathtp.%player%}
+            send "§6死亡地点にテレポートしました"
+            delete {deathtp.%player%}
+        else:
+            send "§c死亡地点が登録されていません"
+
+            

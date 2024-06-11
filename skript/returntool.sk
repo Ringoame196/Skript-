@@ -1,0 +1,22 @@
+On tool Break:
+    set {item.%player%} to event-item
+    send "§6ツール復活のチャンス"
+    set player's tool to poisonous potato of lure named "§cツール復活のじゃがいも"
+
+on player eat poisonous potato:
+    event-item is poisonous potato named "§cツール復活のじゃがいも"
+    send "§a%player%は ツールの復活を犠牲に 30秒間 腐ったじゃがいもと腐った肉しか食べないようになってしまった"
+    play sound "item.totem.use" with volume 0.5 to player
+    set {noroi.%player%} to "true"
+    add {item.%player%} to player's inventory
+    wait 600 ticks
+    delete {noroi.%player%}
+
+on player eat:
+    {noroi.%player%} is set
+    if event-item is poisonous potato:
+    else if event-item is rotten flesh:
+    else:
+        send "§cなぞの力によって食べるのを阻止された"
+        play sound "item.shield.block" with volume 1 to player
+        cancel event

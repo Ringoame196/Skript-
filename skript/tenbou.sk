@@ -1,0 +1,29 @@
+On right click:
+    event-block is yellow stained glass
+    block under the event-block is beacon
+    cancel event
+    loop entities in radius 3 around event-block:
+        loop-entity has scoreboard tag "kazaru"
+        kill loop-entity
+    set {block.x} to block under the event-block's x-coordinate
+    set {block.y} to block under the event-block's y-coordinate
+    set {block.z} to block under the event-block's z-coordinate
+    open chest inventory with 1 row named "&3飾る" to player
+    set {_i} to 0
+    loop 9 times:
+        set slot {_i} of player's current inventory to barrier named "§c選択不可"
+        add 1 to {_i}
+    set slot 4 of player's current inventory to air
+    set {open.%player%} to "open"
+    set {block.%player%} to event-block
+
+On inventory close:
+    {open.%player%} is set
+    delete {open.%player%}
+    
+    slot 4 of player's current inventory is not air
+    execute console command "/execute as %player% at @s run summon armor_stand %{block.x}% %{block.y} - 1% %{block.z}% {Tags:[kazaru],Invisible:true}"
+    loop entities in radius 2 around {block.%player%}:
+        loop-entity has scoreboard tag "kazaru"
+        set helmet of loop-entity to slot 4 of player's current inventory
+        stop

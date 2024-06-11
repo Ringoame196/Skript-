@@ -1,0 +1,37 @@
+command /npc [<text>]:
+    trigger:
+        execute console command "/execute as %player% at @s run summon minecraft:creeper ~ ~ ~ {NoAI:true,Tags:[npc]}"
+        send "§5NPCを作成しました"
+
+on right click:
+    player's target entity has scoreboard tag "npc"
+    if {npc.%player's target entity's UUID%} is not set:
+        set {npc.%player%} to player's target entity's UUID
+        execute console command "/execute as %player's target entity's UUID% at @s run tp @s ~ ~ ~ facing entity %player%"
+        send "§2登録するコマンドを実行してください" to player
+    else:
+        {npccool.%player%} is not set
+        if player is not op:
+            execute console command "/op %player%"
+            set {giveop.%player%} to "op"
+        execute player command "%{npc.%player's target entity's UUID%}%"
+        if {giveop.%player%} is set:
+            execute console command "/deop %player%"
+            delete {giveop.%player%}
+        set {npccool.%player%} to "cool"
+        wait 1 seconds
+        delete {npccool.%player%}
+
+on command:
+    {npc.%player%} is set
+    cancel event
+    set {npc.%{npc.%player%}%} to complete command
+    delete {npc.%player%}
+    send "§3コマンド設定ができました" to player
+
+on damage:
+    {npc.%victim's UUID%} is set
+    cancel event
+
+on death:
+    delete {npc.%victim's UUID%}

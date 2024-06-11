@@ -1,0 +1,36 @@
+every 20 ticks:
+    {setting.time} is not -1
+    loop all players:
+        set {_x} to loop-player's x-coordinate
+        set {_y} to loop-player's y-coordinate
+        set {_z} to loop-player's z-coordinate
+        set {_location} to "%{_x}% %{_y}% %{_z}%"
+        if {houti.%loop-player%} is {_location}:
+            {houti.c.%loop-player%} is not {setting.time}
+            add 1 to {houti.c.%loop-player%}
+            play sound "block.dispenser.fail" with volume 1 to loop-player
+            execute console command "/title %loop-player% actionbar %{houti.c.%loop-player%}%"
+            {houti.c.%loop-player%} is {setting.time}
+            teleport loop-player to {houti.basho}
+
+            set {_x} to loop-player's x-coordinate
+            set {_y} to loop-player's y-coordinate
+            set {_z} to loop-player's z-coordinate
+            set {_location} to "%{_x}% %{_y}% %{_z}%"
+            set {houti.%loop-player%} to {_location}
+        else:
+            if {houti.c.%loop-player%} is {setting.time}:
+                play sound "entity.firework_rocket.launch" with volume 1 to loop-player
+                send "<server> おかえりなさい" to loop-player
+                send "§2あなたは放置していたため場所移動されました" to loop-player
+            set {houti.%loop-player%} to {_location}
+            set {houti.c.%loop-player%} to 0
+
+command /houti <text> [<number>]:
+    trigger:
+        if arg-1 is "basho":
+            set {houti.basho} to location of player
+            send "§2放置したときに飛ばされる場所を登録しました"
+        else if arg-1 is "time":
+            set {setting.time} to arg-2
+            send "§6放置時間を%arg-2%秒に設定しました"

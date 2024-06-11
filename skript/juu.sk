@@ -1,0 +1,48 @@
+On right click:
+    player's tool is golden hoe
+    name of player's tool is "銃"
+    cancel event
+    if durability of player's tool is 32:
+        send "§c弾が切れた…"
+        play sound "block.note_block.bell" with volume 1 to player
+        stop    
+    if player is sneaking:
+        loop 3 times:
+            play sound "entity.arrow.shoot" with volume 1 to player
+            shoot an fire ball
+            damage player's tool by 4
+            if durability of player's tool is 32:
+                send "§c弾が切れた…"
+                play sound "block.note_block.bell" with volume 1 to player
+                stop    
+            wait 2 ticks
+    else:
+        shoot an fire ball
+        play sound "entity.arrow.shoot" with volume 1 to player
+        damage player's tool by 4
+
+On swap hand items:
+    player's tool is golden hoe
+    name of player's tool is "銃"
+    if player has gunpowder:
+        remove gunpowder from player's inventory
+    else:
+        send "§c弾を持っていない"
+        cancel event
+        stop
+    send "§6リロード中…"
+    loop 12 times:
+        repair player's off hand tool by 4
+        play sound "entity.generic.drink" with volume 1 to player
+        wait 5 ticks
+        if durability of player's off hand tool is 0:
+            send "§aリロード完了"
+            play sound "block.anvil.use" with volume 1 to player
+            add player's off hand tool to player's inventory
+            set player's off hand tool to air
+            stop
+
+On swap hand items:
+    player's off hand tool is golden hoe
+    name of player's off hand tool is "銃"
+    cancel event

@@ -1,0 +1,27 @@
+On break:
+    event-block is piston
+    if player's tool is stick named "移動棒":
+        cancel event
+        set {_facing} to event-block's facing
+        if block at location at block {_facing} the event-block is air:
+            set block at location at block {_facing} the event-block to event-block
+            set block at location at event-block to air
+        else:
+            set block at location at block over the event-block to redstone block
+            wait 3 ticks
+            set block at location at block over the event-block to air
+    else if player's tool is stick named "方向変更":
+        cancel event
+        set {_facing} to event-block's facing
+        if {_facing} is west:
+            set event-block's facing to south
+        else if {_facing} is south:
+            set event-block's facing to east
+        else if {_facing} is east:
+            set event-block's facing to north
+        else if {_facing} is north:
+            set event-block's facing to up
+        else if {_facing} is up:
+            set event-block's facing to down
+        else if {_facing} is down:
+            set event-block's facing to west

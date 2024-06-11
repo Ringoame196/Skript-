@@ -1,0 +1,39 @@
+On right click:
+    event-item is skeleton skull named "弾"
+    cancel event
+    event-block is blue carpet
+    spawn a husk at the event-block:
+        set name of the husk to "弾"
+        #set AI of the husk to off
+        apply slowness 255 to the husk for 9999 second
+        set helmet of the husk to iron block
+
+On damage:
+    victim is husk
+    name of victim is "弾"
+    if attacker's tool is command block:
+        kill victim
+        stop
+    cancel event
+    if attacker is set:
+        execute console command "/execute as %victim's UUID% at @s run tp @s ~ ~ ~ facing entity %attacker's UUID%"
+        push the victim backwards at speed 1
+        play sound "entity.arrow.hit_player" with volume 1 to all players
+    else:
+        push the victim backwards at speed 0.5
+
+On damage:
+    attacker is husk
+    name of attacker is "弾"
+    cancel event
+
+every 10 ticks:
+    loop all entities:
+        name of loop-entity is "弾"
+        block under the loop-entity is stone
+        kill loop-entity
+        play sound "block.anvil.use" with volume 1 to all players
+
+On break:
+    player's tool is stick named "ラケット"
+    cancel event

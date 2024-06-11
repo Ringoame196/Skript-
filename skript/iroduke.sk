@@ -1,0 +1,39 @@
+on rightclick:
+    if player's tool is wool:
+        if event-block is tulip:
+            cancel event
+            play sound "block.brewing_stand.brew" with volume 1 and pitch 1 at player
+            if event-block is red tulip:
+                set player's tool to red wool
+            else if event-block is orange tulip:
+                set player's tool to orange wool
+            else if event-block is white tulip:
+                set player's tool to white wool
+            else if event-block is pink tulip:
+                set player's tool to pink wool
+        else if event-block is ore:
+            cancel event
+            play sound "block.brewing_stand.brew" with volume 1 and pitch 1 at player
+            if event-block is lapis ore:
+                set player's tool to blue wool
+            else if event-block is emerald ore:
+                set player's tool to lime wool
+            else if event-block is coal ore:
+                set player's tool to black wool
+            else if event-block is diamond ore:
+                set player's tool to light blue wool
+        else if event-block is tnt:
+            play sound "entity.generic.explode" with volume 1 and pitch 1 at player
+            cancel event
+            set player's tool to wool
+        else if event-block is enchanting table:
+            play sound "block.enchantment_table.use" with volume 1 and pitch 1 at player
+            cancel event
+            set player's tool to wool of sharpness 255
+        else if event-block is stonecutter:
+            cancel event
+            play sound "entity.villager.death" with volume 1 and pitch 1 at player
+            if player's tool is wool of sharpness 255:
+                set player's tool to 8 of carpet of sharpness 255
+            else:
+                set player's tool to 8 of carpet

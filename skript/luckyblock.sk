@@ -1,0 +1,37 @@
+On right click:
+    event-block is chest
+    event-item is golden pickaxe named "ラッキーブロック作成"
+    cancel event
+    delete {luckyblock::*}
+    set {_i} to 0
+    loop 27 times:
+        if slot {_i} of event-block is not air: 
+            add slot {_i} of event-block to {luckyblock::*}
+            add 1 to {_i}
+    play sound "block.anvil.use" with volume 1 to player
+    add yellow shulker box named "§6ラッキーブロック" to player's inventory
+
+On right click:
+    name of event-block is "§6ラッキーブロック"
+    cancel event
+
+On Break:
+    event-block is yellow shulker box
+    name of event-block is "§6ラッキーブロック"
+    cancel event
+    loop 3 times:
+        set {_i} to 1
+        set {_list::*} to yellow concrete,blue concrete,red concrete,pink concrete,orange concrete
+        loop 5 times:
+            play sound "block.dispenser.fail" with volume 1 to player
+            set block at event-block to {_list::%{_i}%}
+            add 1 to {_i}
+            wait 5 ticks
+    set {_s} to size of {luckyblock::*}
+    set {_r} to random integer from 1 to {_s}
+    set {_item} to {luckyblock::%{_r}%}
+    set block at event-block to chest
+    set slot 0 of event-block's inventory to {_item}
+    delete event-block
+    play sound "block.enchantment_table.use" with volume 1 to player
+    show large explosion at the event-block to all players

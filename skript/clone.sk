@@ -1,0 +1,46 @@
+On Dispense:
+    event-item is totem of undying named "クローン作成"
+    cancel event
+    loop all players:
+        block under the loop-player is event-block
+        send "§aクローンを作成しました" to loop-player
+        play sound "block.anvil.use" with volume 1 to loop-player
+        set {_name} to loop-player
+        spawn a armor stand at the loop-player:
+            set chestplate of the armor stand to leather chestplate
+            set leggings of the armor stand to leather leggings
+            set boots of the armor stand to leather boots
+            set name of the armor stand to "%{_name}%"
+        execute console command "/execute as %loop-player% at @s run replaceitem entity @e[type=minecraft:armor_stand,limit=1,sort=nearest] armor.head minecraft:player_head{SkullOwner:%loop-player%}"
+        set block at loop-player to glass
+        set block at block over the loop-player to glass
+        set {clone.%loop-player%} to location of loop-player
+        delete {inventory.%loop-player%::*}
+        set {_i} to 0
+        loop 36 times:
+            add slot {_i} of loop-player's inventory to {inventory.%loop-player%::*}
+            add 1 to {_i}
+        stop
+
+On death:
+    victim is player
+    {clone.%victim%} is set
+    cancel event
+    wait 1 ticks
+    teleport victim to {clone.%victim%}
+    send "§cクローンに接続しました" to victim
+    
+    set {_i} to 0
+    loop 36 times:
+        set slot {_i} of victim's inventory to {inventory.%victim%::%{_i} + 1%} 
+        add 1 to {_i}
+    delete {inventory.%victim%::*}
+    play sound "item.totem.use" with volume 0.5 to victim
+    apply blindness 255 to the victim for 3 second
+    loop all entities:
+        loop-entity is not player
+        name of loop-entity is victim's name
+        kill loop-entity
+    set block at victim to air
+    set block at block over the victim to air
+    delete {clone.%victim%}

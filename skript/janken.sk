@@ -1,0 +1,33 @@
+on rightclick:
+    if player is holding book named "デスノート":
+        open chest inventory with 3 row named "§4デスノート" to player
+        set {_i} to 1
+        set slot 0 of player's current inventory to redstone block named "§c全員"
+        loop all entities in radius 40 of the player:
+            loop-entity is not player
+            set slot {_i} of player's current inventory to oak wood named "%loop-entity%" with lore "HP:%health of loop-entity%"
+            add 1 to {_i}
+
+on inventory click:
+    name of clicked inventory is "§4デスノート"
+    play sound "block.dispenser.dispense" with volume 1 and pitch 1 at player
+    cancel event
+    if clicked slot is redstone block:
+        loop all entities in radius 40 of the player:
+            loop-entity is not player
+            loop-entity is not item
+            kill loop-entity
+            close player's inventory
+            broadcast "§7%loop-entity% は %player%の闇の力によって消された"
+        broadcast "<%player%様> §l§c俺様に逆らうからこうなるんだ…"
+        stop
+    else:
+        loop all entities in radius 40 of the player:
+            loop-entity is not player
+            loop-entity is not item
+            if clicked slot is oak wood named "%loop-entity%":
+                kill loop-entity
+                close player's inventory
+                broadcast "§7%loop-entity% は %player%の闇の力によって消された"
+                broadcast "<%player%様> §l§c俺様に逆らうからこうなるんだ…"
+                stop

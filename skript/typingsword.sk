@@ -1,0 +1,46 @@
+On Script Load:
+    set {theme::*} to "Skript","マイクラ","コマンド","りんごあめ196","ツイッター","Minecraft","今日のSkript","りんご","木のピッケル","草ブロック"
+
+On damage:
+    attacker is player
+    attacker's tool is golden sword named "タイピングSword"
+    if {theme.%attacker%} is set:
+        cancel event
+        delete {theme.%attacker%}
+        stop
+    set {_s} to size of {theme::*}
+    set {_r} to random integer from 1 to {_s}
+    set {theme.%attacker%} to {theme::%{_r}%}
+    set {enemy.%attacker%} to victim
+    set {_t} to {theme.%attacker%}
+    victim's health >= damage
+    push victim backwards at speed 1
+    send "§a[お題] %{theme.%attacker%}%" to attacker
+    wait 160 ticks
+    {theme.%attacker%} is {_t}
+    delete {theme.%attacker%}
+    send "§c時間切れ" to attacker
+
+On chat:
+    message is {theme.%player%}
+    cancel event
+    set {_l} to length of message
+    set {_hp} to {enemy.%player%}'s health
+    set {_c} to 0
+    delete {theme.%player%}
+    loop {_l} times: 
+        remove 1 from {enemy.%player%}'s health
+        remove 1 from {_hp}
+        add 1 to {_c}
+        play sound "entity.arrow.hit_player" with volume 1 to player
+        if {_hp} <= 0:
+            set {_hp} to 0
+            send "§c%{_c}%ダメージ与えた"
+            kill {theme.%player%}
+            stop
+        wait 10 ticks
+    send "§c%{_l}%ダメージ与えた 残り%{_hp}%HP"
+
+command /reset:
+    trigger:
+        delete {theme.%player%}

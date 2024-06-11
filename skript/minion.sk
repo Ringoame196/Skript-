@@ -1,0 +1,48 @@
+On right click:
+    event-item is player head named "ミニオン召喚"
+    event-block is set
+    cancel event
+
+    set {_x} to event-block's x-coordinate - 0.5
+    set {_y} to event-block's y-coordinate - 0.5
+    set {_z} to event-block's z-coordinate - 0.5
+
+    add 1 to {_y}
+
+    execute console command "/summon villager %{_x}% %{_y}% %{_z}% {NoAI:true,Tags:[minion],Age:-32768}"
+
+every seconds:
+    loop all entities:
+        loop-entity is villager
+        loop-entity has scoreboard tag "minion"
+        set {_y} to loop-entity's y-coordinate - 0.5
+        set {_r} to random integer from 1 to 9
+        set {_i} to 1
+        loop blocks in radius 2 around loop-entity:
+            loop-block's y-coordinate is {_y}
+            if {_r} is {_i}:
+                set block at loop-block to gold ore
+            add 1 to {_i} 
+
+every 3 seconds:
+    loop all entities:
+        loop-entity is villager
+        loop-entity has scoreboard tag "minion"
+        set {_y} to loop-entity's y-coordinate - 0.5
+        set {_m} to loop-entity's UUID
+        loop blocks in radius 2 around loop-entity:
+            loop-block's y-coordinate is {_y}
+            loop-block is gold ore
+
+            set block at loop-block to cobblestone
+            wait 10 ticks
+            set block at loop-block to stone
+            add 1 to {minion.%{_m}%}
+            {minion.%{_m}%} is 65
+            set {minion.%{_m}%} to 64
+            stop
+
+On right click:
+    player's target entity has scoreboard tag "minion"
+    add {minion.%target entity's UUID%} of  gold ingot to player's inventory
+    set {minion.%target entity's UUID%} to 0

@@ -1,0 +1,12 @@
+On damage:
+    damage cause is projectile
+    attacker is player
+    cancel event
+    set {_l} to location of attacker
+    wait 1 ticks
+    teleport attacker to victim
+    teleport victim to {_l}
+    play sound "BLOCK_NOTE_BLOCK_BELL" with volume 1 to attacker
+    send "<%attacker%> §aチェンジ" to all players
+    apply blindness 255 to the attacker for 1 second
+    add snowball to attacker's inventory
